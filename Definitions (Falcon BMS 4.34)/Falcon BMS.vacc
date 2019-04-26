@@ -1,0 +1,283 @@
+q A Wacs, Sentry, Chalice
+  1 Request Picture
+  2 Declare
+  3 Request Help
+  4 Wilco
+  5 Unable
+  6 Checking In
+  7 Checking Out
+  8 Request Relief
+  9 Request Res Cap
+  q Vector, Alpha Check
+    1 Threat
+    2 Target
+    3 Package
+    4 Tanker
+    5 Divert Field
+    6 Father, Home Plate
+    7 Mother, Carrier
+  q
+    1 Bogey Dope
+
+w Two
+  1 Attack My Target
+  2 Buddy Spike
+  3 Raygun
+  4 Weapons Free, Weapons Green
+  5 Weapons Hold, Weapons Red
+  6 Check Six
+  7 Clear My Six
+  8 Commit, Attack as Fragged
+  9 Go Shooter
+  0 Go Cover
+  w
+    1 Rejoin
+    2 Split
+    3 Glue
+    4 Punch Stores
+    5 Zap Cursor
+    w
+      1 Offensive Pursuit
+      2 Offensive Split
+      3 Beam Deploy
+      4 Grinder
+      5 Bracket Wide
+      6 Bracket Short
+      7 Sweep
+      8 Go Defensive
+      w
+        1 Resume Mission
+        2 Return to Base, R T B
+        3 Snooze Radar, Strangle Radar
+        4 Radar On, Activate Radar
+        5 Say Position, Say Pause It
+        6 Say Damage
+        7 Say Status
+        8 Say Fuel
+        9 What State
+        w
+          1 Close Up
+          2 Cross Under, Shackle
+          3 Break Right
+          4 Break Left
+          5 Go Higher
+          6 Go Lower
+          7 Flex
+          8 Take Lead
+          9 Kickout
+          w
+            1 Go Wedge
+            2 Go Trail
+            3 Go Ladder
+            4 Go Stack
+            5 Go Fluid
+            6 Go Spread
+            7 Go Arrowhead
+            w
+              1 Fence In
+              2 Fence Out
+              3 Music On
+              4 Music Off, Strangle Music
+              5 Smoke On
+              6 Smoke Off
+              w
+                1 Line Up Single Ship
+                2 Line Up Element
+
+e Three
+  1 Attack My Target
+  2 Buddy Spike
+  3 Raygun
+  4 Weapons Free, Weapons Green
+  5 Weapons Hold, Weapons Red
+  6 Check Six
+  7 Clear My Six
+  8 Commit, Attack as Fragged
+  e
+    1 Offensive Pursuit
+    2 Offensive Split
+    3 Beam Deploy
+    4 Grinder
+    5 Bracket Wide
+    6 Bracket Short
+    7 Sweep
+    8 Go Defensive
+    e
+      1 Resume Mission
+      2 Return to Base, R T B
+      3 Snooze Radar, Strangle Radar
+      4 Radar On, Activate Radar
+      5 Say Position, Say Pause It
+      6 Say Damage
+      7 Say Status
+      8 Say Fuel
+      9 What State
+      e
+        1 Close Up
+        2 Cross Under, Shackle
+        3 Break Right
+        4 Break Left
+        5 Go Higher
+        6 Go Lower
+        7 Flex
+        8 Kickout
+        e
+          1 Go Wedge
+          2 Go Trail
+          3 Go Ladder
+          4 Go Stack
+          5 Go Fluid
+          6 Go Spread
+          7 Go Arrowhead
+          e
+            1 Fence In
+            2 Fence Out
+            3 Music On
+            4 Music Off, Strangle Music
+            5 Smoke On
+            6 Smoke Off
+
+r Flight
+  1 Attack My Target
+  2 Buddy Spike
+  3 Raygun
+  4 Weapons Free, Weapons Green
+  5 Weapons Hold, Weapons Red
+  6 Check Six
+  7 Clear My Six
+  8 Commit, Attack as Fragged
+  r
+    1 Rejoin
+    2 Punch Stores
+    3 Zap Cursor
+    r
+      1 Resume Mission
+      2 Return to Base, R T B
+      3 Snooze Radar, Strangle Radar
+      4 Radar On, Activate Radar
+      5 Say Position, Say Pause It
+      6 Say Damage
+      7 Say Status
+      8 Say Fuel
+      9 What State
+      r
+        1 Close Up
+        2 Cross Under, Shackle
+        3 Break Right
+        4 Break Left
+        5 Go Higher
+        6 Go Lower
+        7 Flex
+        8 Kickout
+        r
+          1 Go Wedge
+          2 Go Trail
+          3 Go Ladder
+          4 Go Stack
+          5 Go Fluid
+          6 Go Spread
+          7 Go Arrowhead
+          8 Go Box
+          9 Go Res Cell
+          r
+            1 Go Vic
+            2 Go Line Abreast, Go Line
+            3 Go Finger, Go Finger Four
+            4 Go Echelon Left
+            5 Go Echelon Right
+            6 Go Diamond
+            r
+              1 Fence In
+              2 Fence Out
+              3 Music On
+              4 Music Off, Strangle Music
+              5 Smoke On
+              6 Smoke Off
+              r
+                1 Line Up Single Ship
+                2 Line Up Element
+                3 Line Up Three in the Slot, Line Up Four Ship Three in the Slot
+                4 Line Up Four in the Slot, Line Up Four Ship Four in the Slot
+
+t Chief, Crew Chief
+  1 Install E P U Pin, Pull E P U Pin
+  2 Set Chocks, Place Chocks, Pull Chocks
+  5 Request Refuel
+  7 Recharge the J F S, Recharge J F S
+  t
+    t
+      t
+        t
+          t
+            t
+              1 Abort Dash One
+              2 Abort Dash Two
+              3 Abort Dash Three
+              4 Abort Dash Four
+
+t Ground
+  3 Ready to Taxi
+  4 Clear of the Active, Taxi Back, Taxi to Parking
+  6 Say Again
+  t
+    t
+      t
+        t &common
+          1 Request Altimeter Setting
+          2 Request Q F E
+          3 Request Active Takeoff Runway
+          4 Request Active Landing Runway
+          5 Wind Check
+
+t Tower
+  t
+    1 Ready for Departure, Ready for Release, Ready for Takeoff
+    2 Request Landing
+    3 Request Element Landing, Request Flight Landing
+    4 On Final, Established
+    5 In the Break, Breaking
+    6 Declaring an Emergency
+    7 Aborting
+    8 Say Again
+    t
+      t
+        t *common
+
+t Approach
+  t
+    t
+      1 Request Vectors for the Visual
+      2 Request Radar Vectors
+      3 Request the Overhead
+      4 Request the Visual, Request Straight In
+      5 Declaring an Emergency
+      6 Aborting
+      7 Traffic in Sight
+      8 Say Again
+      t
+        t *common
+
+t Departure
+  t
+    t
+      t
+        1 Airborne as Fragged, Airborne
+        t *common
+
+t Mother
+  t
+    t
+      t
+        t
+          t
+            1 Inbound
+            2 See You
+            3 Platform
+            4 Hornet Ball
+            5 In the Break
+            6 Aborting
+
+y Tanker, Camel, Canteen, Texaco
+  1 Request Rejoin
+  2 Ready Pre Contact
+  3 Topped Off

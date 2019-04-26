@@ -1,0 +1,160 @@
+F1 Two &wing
+  F1 &nav
+    F1 Flex, Anchor Here
+    F2 R T B
+    F3 Flow to Spee
+    F4 Flow to Steerpoint
+    F5 Flow to Tanker
+  F2 Attack &engage
+    F1 Mud, Movers
+    F2 Armor
+    F3 Artillery
+    F4 Triple A, Air Defenses
+    F5 Trucks
+    F6 Infantry
+    F7 Ships
+    F8 Bandits
+    F9 As Fragged
+  F3 Attack &engagewith
+    F1 Mud, Movers &weapons
+      F1 with Missiles &dirs
+        F1
+        F2 from the North
+        F3 from the South
+        F4 from the East
+        F5 from the West
+      F2 with Bombs *dirs
+      F3 with Paveway, with Jay Dam *dirs
+      F4 with Rockets *dirs
+      F5 with Smoke *dirs
+      F6 with Cannon *dirs
+    F2 Armor *weapons
+    F3 Artillery *weapons
+    F4 Triple A, Air Defenses *weapons
+    F5 Trucks *weapons
+    F6 Infantry *weapons
+    F7 Ships *weapons
+  F4 &maneuvers
+    F1 Beak Right
+    F2 Break Left
+    F3 Break High
+    F4 Break Low
+    F7 Clear Right
+    F8 Clear Left
+    F9 Pump
+  F5 Rejoin
+
+F2 Flight
+  F1 *nav
+  F2 Attack *engage
+  F3 Attack *engagewith
+  F4 *maneuvers
+  F5
+    F1 Go Spread
+    F2 Go Trail
+    F3 Go Wedge
+    F4 Go Echelon Right
+    F5 Go Echelon Left
+    F6 Go Finger Four, Go Route
+    F7 Go Spread Four
+    F8 Kickout
+    F9 Close Up
+  F6 Rejoin
+
+F3 Three *wing
+
+F4 Jay Tac
+  F1 One
+  F2 Two
+  F3 Three
+  F4 Four
+  F5 Five
+  F6 Six
+  F7 Seven
+  F8 Eight
+  F9 Nine
+  F10 Ten
+
+F5 Tower
+  F1 One &tower
+    F3 Request Engine Start, Ready for Engine Start
+    F1 Request Taxi, Ready to Taxi
+    F3 Return to Parking, Return to Ramp
+    F1 Request Takeoff, Ready to Go
+    F2 Cancel Takeoff
+    F1 Aborted Takeoff
+    F1 Inbound
+    F1 Diverting, Abort Inbound
+    F2 Alpha Check, Vectors to Final
+    F1 Final Approach, Faff Inbound
+    F2 Going Missed
+    F3 Vectors to Runway
+    F1 Going Around
+  F2 Two *tower
+  F3 Three *tower
+  F4 Four *tower
+  F5 Five *tower
+  F6 Six *tower
+  F7 Seven *tower
+  F8 Eight *tower
+  F9 Nine *tower
+  F10 Ten *tower
+
+F6 Tanker &tanker
+  F1 Request Rejoin
+  F1 Ready Pre Contact
+  F2 Abort Refuel
+  F1 Request Split
+
+F6 Tanker
+  F1 One *tanker
+  F2 Two *tanker
+  F3 Three *tanker
+  F4 Four *tanker
+  F5 Five *tanker
+  F6 Six *tanker
+  F7 Seven *tanker
+  F8 Eight *tanker
+  F9 Nine *tanker
+  F10 Ten *tanker
+
+F7 AWACS &awacs
+  F1 Alpha Check Bullseye
+  F2 Alpha Check Home Plate
+  F4 Bogey Dope
+  F5 Request Picture
+
+F7 AWACS
+  F1 One *awacs
+  F2 Two *awacs
+  F3 Three *awacs
+  F4 Four *awacs
+  F5 Five *awacs
+  F6 Six *awacs
+  F7 Seven *awacs
+  F8 Eight *awacs
+  F9 Nine *awacs
+  F10 Ten *awacs
+
+F8 Chief
+  F1 Request Rearm, Request Refuel
+  F2
+    F1 Connect Ground Power
+    F2 Disconnect Ground Power
+  F3 Request Repair
+
+F1 Number One
+F2 Number Two
+F3 Number Three
+F4 Number Four
+F5 Number Five
+F6 Number Six
+F7 Number Seven
+F8 Number Eight
+F9 Number Nine
+F10 Number Ten
+
+F12 Disregard
+
+SLEEP Close Channel
+AWAKE Open Channel
