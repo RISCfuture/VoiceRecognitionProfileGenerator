@@ -151,6 +151,7 @@ class VoiceAttackGenerator
         template_commands xml
         command_set.commands.each do |command|
           next unless command.prefix? || command.real?
+
           output_command xml, command
         end
       end
@@ -250,6 +251,7 @@ class VoiceAttackGenerator
               xml.Delay 0
               xml.KeyCodes do
                 raise "Unknown code for key '#{keystroke}'" unless KEY_CODES.key?(keystroke)
+
                 xml.unsignedShort KEY_CODES[keystroke]
               end
               xml.Context
@@ -390,7 +392,6 @@ class VoiceAttackGenerator
           xml.Disabled false
           xml.RandomSounds
         end
-
       end
 
       xml.Async true
@@ -504,7 +505,6 @@ class VoiceAttackGenerator
           xml.Disabled false
           xml.RandomSounds
         end
-
       end
 
       xml.Async true
@@ -618,7 +618,6 @@ class VoiceAttackGenerator
           xml.Disabled false
           xml.RandomSounds
         end
-
       end
 
       xml.Async true
@@ -731,7 +730,6 @@ class VoiceAttackGenerator
           xml.Disabled false
           xml.RandomSounds
         end
-
       end
 
       xml.Async true

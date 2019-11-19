@@ -4,11 +4,11 @@ require 'pathname'
 require 'bundler'
 Bundler.require
 
-$: << __dir__
+$LOAD_PATH << __dir__
 require 'lib/command_set'
 
-FORMATS = %w[vacc voiceattack].freeze
-options = {}
+FORMATS = %w[vac voiceattack].freeze
+options = {format: 'vac'}
 parser = OptionParser.new do |opts|
   opts.banner = "Usage: generate.rb [options] /path/to/profile.vacc"
 
@@ -17,14 +17,14 @@ parser = OptionParser.new do |opts|
     exit
   end
 
-  opts.on('-fFORMAT', '--format=FORMAT', "Specify output format: vacc, voiceattack") do |f|
+  opts.on('-fFORMAT', '--format=FORMAT', "Specify output format: #{FORMATS.join(', ')}") do |f|
     options[:format] = f
   end
 end
 parser.parse!
 
 generator = case options[:format]
-              when 'vacc'
+              when 'vac'
                 require 'lib/vac_generator'
                 VACGenerator
               when 'voiceattack'

@@ -13,6 +13,7 @@ class CommandSet
 
     commands.each do |command|
       next if command.virtual?
+
       yield command
     end
   end
@@ -29,7 +30,7 @@ class CommandSet
   LINE_RX                = /^#{INDENT_RX}#{KEYSTROKE_RX}(?: #{PHRASE_ALIAS_RX}| #{ALIAS_ONLY_RX})?$/.freeze
 
   def self.parse(pathname)
-    set     = new(pathname.basename('.vacc'))
+    set     = new(pathname.basename(pathname.extname))
     aliases = Hash.new
 
     current_parent = nil
@@ -65,9 +66,11 @@ class CommandSet
 
       if (alias_name = matches[:aliasdef].presence)
         raise "Redefined alias '#{alias_name}' on line #{line_number}" if aliases.key?(alias_name)
+
         aliases[alias_name] = command
       elsif (alias_name = matches[:aliasref].presence)
         raise "Unknown alias '#{alias_name}' referenced on line #{line_number}" unless aliases.key?(alias_name)
+
         copy_alias(command, aliases[alias_name]) { |alias_command| set.commands << alias_command }
       end
     end
@@ -103,6 +106,7 @@ class Command
 
   def name
     return phrases.first if top_level?
+
     return parent.name ? "#{parent.name} :: #{phrases.first}" : phrases.first
   end
 
@@ -137,7 +141,6 @@ class Command
   def real?() !virtual? end
 
   def top_level?() parent.nil? end
-
 
   def inspect() "#<#{self.class} #{name}>" end
 end
