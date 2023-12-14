@@ -1,4 +1,6 @@
-require 'securerandom'
+# frozen_string_literal: true
+
+require "securerandom"
 
 class Command
   def prefix?() top_level? && has_children? end
@@ -10,16 +12,12 @@ class Command
   def suffix_phrases
     return phrases if parent.top_level?
 
-    if phrases.empty?
-      return parent.suffix_phrases
-    else
-      if parent.suffix_phrases.empty?
-        return phrases
-      else
-        return phrases.flat_map do |phrase|
-          parent.suffix_phrases.map { |pp| "#{pp} #{phrase}" }
-        end
-      end
+    return parent.suffix_phrases if phrases.empty?
+
+    return phrases if parent.suffix_phrases.empty?
+
+    return phrases.flat_map do |phrase|
+      parent.suffix_phrases.map { |pp| "#{pp} #{phrase}" }
     end
   end
 end
@@ -29,7 +27,7 @@ class VoiceAttackGenerator
 
   def initialize(command_set)
     @command_set = command_set
-    @builder     = Nokogiri::XML::Builder.new(&method(:generate_xml))
+    @builder     = Nokogiri::XML::Builder.new { generate_xml(_1) }
   end
 
   def to_s() @builder.to_xml(indent: 4) end
@@ -37,113 +35,113 @@ class VoiceAttackGenerator
   private
 
   KEY_CODES = {
-      'BRK'   => 3,
-      'BS'    => 8,
-      'TAB'   => 9,
-      'CLR'   => 12,
-      'ENTER' => 13,
-      'PAUSE' => 19,
-      'ESC'   => 27,
-      'SPC'   => 32,
-      'PGUP'  => 33,
-      'PGDN'  => 34,
-      'END'   => 35,
-      'HOME'  => 36,
-      'LT'    => 37,
-      'UP'    => 38,
-      'RT'    => 39,
-      'DN'    => 40,
-      'PRINT' => 44,
-      'INS'   => 45,
-      'DEL'   => 46,
-      '0'     => 48,
-      '1'     => 49,
-      '2'     => 50,
-      '3'     => 51,
-      '4'     => 52,
-      '5'     => 53,
-      '6'     => 54,
-      '7'     => 55,
-      '8'     => 56,
-      '9'     => 57,
-      'a'     => 65,
-      'b'     => 66,
-      'c'     => 67,
-      'd'     => 68,
-      'e'     => 69,
-      'f'     => 70,
-      'g'     => 71,
-      'h'     => 72,
-      'i'     => 73,
-      'j'     => 74,
-      'k'     => 75,
-      'l'     => 76,
-      'm'     => 77,
-      'n'     => 78,
-      'o'     => 79,
-      'p'     => 80,
-      'q'     => 81,
-      'r'     => 82,
-      's'     => 83,
-      't'     => 84,
-      'u'     => 85,
-      'v'     => 86,
-      'w'     => 87,
-      'x'     => 88,
-      'y'     => 89,
-      'z'     => 90,
-      'LWIN'  => 91,
-      'RWIN'  => 92,
-      'SEL'   => 93,
-      'KP0'   => 96,
-      'KP1'   => 97,
-      'KP2'   => 98,
-      'KP3'   => 99,
-      'KP4'   => 100,
-      'KP5'   => 101,
-      'KP6'   => 102,
-      'KP7'   => 103,
-      'KP8'   => 104,
-      'KP9'   => 105,
-      'KP*'   => 106,
-      'KP+'   => 107,
-      'KP-'   => 109,
-      'KP.'   => 110,
-      'KP/'   => 111,
-      'F1'    => 112,
-      'F2'    => 113,
-      'F3'    => 114,
-      'F4'    => 115,
-      'F5'    => 116,
-      'F6'    => 117,
-      'F7'    => 118,
-      'F8'    => 119,
-      'F9'    => 120,
-      'F10'   => 121,
-      'F11'   => 122,
-      'F12'   => 123,
-      'NUML'  => 144,
-      'SCRL'  => 145,
-      ';'     => 186,
-      '='     => 187,
-      ','     => 188,
-      '-'     => 189,
-      '.'     => 190,
-      '/'     => 191,
-      '`'     => 223,
-      '['     => 219,
-      '\\'    => 220,
-      ']'     => 221,
+      "BRK"   => 3,
+      "BS"    => 8,
+      "TAB"   => 9,
+      "CLR"   => 12,
+      "ENTER" => 13,
+      "PAUSE" => 19,
+      "ESC"   => 27,
+      "SPC"   => 32,
+      "PGUP"  => 33,
+      "PGDN"  => 34,
+      "END"   => 35,
+      "HOME"  => 36,
+      "LT"    => 37,
+      "UP"    => 38,
+      "RT"    => 39,
+      "DN"    => 40,
+      "PRINT" => 44,
+      "INS"   => 45,
+      "DEL"   => 46,
+      "0"     => 48,
+      "1"     => 49,
+      "2"     => 50,
+      "3"     => 51,
+      "4"     => 52,
+      "5"     => 53,
+      "6"     => 54,
+      "7"     => 55,
+      "8"     => 56,
+      "9"     => 57,
+      "a"     => 65,
+      "b"     => 66,
+      "c"     => 67,
+      "d"     => 68,
+      "e"     => 69,
+      "f"     => 70,
+      "g"     => 71,
+      "h"     => 72,
+      "i"     => 73,
+      "j"     => 74,
+      "k"     => 75,
+      "l"     => 76,
+      "m"     => 77,
+      "n"     => 78,
+      "o"     => 79,
+      "p"     => 80,
+      "q"     => 81,
+      "r"     => 82,
+      "s"     => 83,
+      "t"     => 84,
+      "u"     => 85,
+      "v"     => 86,
+      "w"     => 87,
+      "x"     => 88,
+      "y"     => 89,
+      "z"     => 90,
+      "LWIN"  => 91,
+      "RWIN"  => 92,
+      "SEL"   => 93,
+      "KP0"   => 96,
+      "KP1"   => 97,
+      "KP2"   => 98,
+      "KP3"   => 99,
+      "KP4"   => 100,
+      "KP5"   => 101,
+      "KP6"   => 102,
+      "KP7"   => 103,
+      "KP8"   => 104,
+      "KP9"   => 105,
+      "KP*"   => 106,
+      "KP+"   => 107,
+      "KP-"   => 109,
+      "KP."   => 110,
+      "KP/"   => 111,
+      "F1"    => 112,
+      "F2"    => 113,
+      "F3"    => 114,
+      "F4"    => 115,
+      "F5"    => 116,
+      "F6"    => 117,
+      "F7"    => 118,
+      "F8"    => 119,
+      "F9"    => 120,
+      "F10"   => 121,
+      "F11"   => 122,
+      "F12"   => 123,
+      "NUML"  => 144,
+      "SCRL"  => 145,
+      ";"     => 186,
+      "="     => 187,
+      ","     => 188,
+      "-"     => 189,
+      "."     => 190,
+      "/"     => 191,
+      "`"     => 223,
+      "["     => 219,
+      "\\"    => 220,
+      "]"     => 221,
       "'"     => 222
   }.freeze
   private_constant :KEY_CODES
 
-  XSI_NIL  = {'xsi:nil' => true}.freeze
-  GUID_NIL = '00000000-0000-0000-0000-000000000000'.freeze
+  XSI_NIL  = {"xsi:nil" => true}.freeze
+  GUID_NIL = "00000000-0000-0000-0000-000000000000"
   private_constant :XSI_NIL, :GUID_NIL
 
   def generate_xml(xml)
-    xml.Profile('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance', 'xmlns:xsd' => 'http://www.w3.org/2001/XMLSchema') do
+    xml.Profile("xmlns:xsi" => "http://www.w3.org/2001/XMLSchema-instance", "xmlns:xsd" => "http://www.w3.org/2001/XMLSchema") do
       xml.HasMB false
       xml.Id SecureRandom.uuid
       xml.Name command_set.name
@@ -183,7 +181,7 @@ class VoiceAttackGenerator
       xml.GlobalJoystickButton2 0
       xml.GlobalJoystickNumber2 0
       xml.ReferencedProfile XSI_NIL
-      xml.ExportVAVersion '1.7.5'
+      xml.ExportVAVersion "1.7.5"
       xml.ExportOSVersionMajor 6
       xml.ExportOSVersionMinor 2
       xml.OverrideConfidence false
@@ -230,7 +228,7 @@ class VoiceAttackGenerator
       xml.OriginId GUID_NIL
       xml.SessionEnabled true
       xml.Id SecureRandom.uuid
-      xml.CommandString(command.prefix? ? command.phrases.join(';') : command.suffix_phrases.join(';'))
+      xml.CommandString(command.prefix? ? command.phrases.join(";") : command.suffix_phrases.join(";"))
       if command.real?
         xml.ActionSequence do
           command.macro.each_with_index do |keystroke, ordinal|
@@ -246,7 +244,7 @@ class VoiceAttackGenerator
               xml.DecimalTransient1 0
               xml.Caption "Press #{keystroke.upcase} key and hold for 0.1 seconds and release"
               xml.id SecureRandom.uuid
-              xml.ActionType 'PressKey'
+              xml.ActionType "PressKey"
               xml.Duration 0.1
               xml.Delay 0
               xml.KeyCodes do
@@ -267,8 +265,8 @@ class VoiceAttackGenerator
               xml.ConditionStartType 0
               xml.DecimalContext1 0
               xml.DecimalContext2 0
-              xml.DateContext1 '0001-01-01T00:00:00'
-              xml.DateContext2 '0001-01-01T00:00:00'
+              xml.DateContext1 "0001-01-01T00:00:00"
+              xml.DateContext2 "0001-01-01T00:00:00"
               xml.Disabled false
               xml.RandomSounds
             end
@@ -341,7 +339,7 @@ class VoiceAttackGenerator
 
   def template_commands(xml)
     xml.Command do
-      xml.Referrer 'xsi:nil' => true
+      xml.Referrer "xsi:nil" => true
       xml.ExecType 3
       xml.Confidence 0
       xml.PrefixActionCount 0
@@ -364,7 +362,7 @@ class VoiceAttackGenerator
           xml.PairingSet false
           xml.PairingSetElse false
           xml.Ordinal 0
-          xml.ConditionMet 'xsi:nil' => true
+          xml.ConditionMet "xsi:nil" => true
           xml.IndentLevel 0
           xml.ConditionSkip false
           xml.IsSuffixAction false
@@ -450,11 +448,11 @@ class VoiceAttackGenerator
       xml.CLE 0
       xml.EX1 false
       xml.EX2 false
-      xml.InternalId 'xsi:nil' => true
+      xml.InternalId "xsi:nil" => true
     end
 
     xml.Command do
-      xml.Referrer 'xsi:nil' => true
+      xml.Referrer "xsi:nil" => true
       xml.ExecType 3
       xml.Confidence 0
       xml.PrefixActionCount 0
@@ -477,7 +475,7 @@ class VoiceAttackGenerator
           xml.PairingSet false
           xml.PairingSetElse false
           xml.Ordinal 0
-          xml.ConditionMet 'xsi:nil' => true
+          xml.ConditionMet "xsi:nil" => true
           xml.IndentLevel 0
           xml.ConditionSkip false
           xml.IsSuffixAction false
@@ -563,11 +561,11 @@ class VoiceAttackGenerator
       xml.CLE 0
       xml.EX1 false
       xml.EX2 false
-      xml.InternalId 'xsi:nil' => true
+      xml.InternalId "xsi:nil" => true
     end
 
     xml.Command do
-      xml.Referrer 'xsi:nil' => true
+      xml.Referrer "xsi:nil" => true
       xml.ExecType 3
       xml.Confidence 0
       xml.PrefixActionCount 0
@@ -590,7 +588,7 @@ class VoiceAttackGenerator
           xml.PairingSet false
           xml.PairingSetElse false
           xml.Ordinal 0
-          xml.ConditionMet 'xsi:nil' => true
+          xml.ConditionMet "xsi:nil" => true
           xml.IndentLevel 0
           xml.ConditionSkip false
           xml.IsSuffixAction false
@@ -675,11 +673,11 @@ class VoiceAttackGenerator
       xml.CLE 0
       xml.EX1 false
       xml.EX2 false
-      xml.InternalId 'xsi:nil' => true
+      xml.InternalId "xsi:nil" => true
     end
 
     xml.Command do
-      xml.Referrer 'xsi:nil' => true
+      xml.Referrer "xsi:nil" => true
       xml.ExecType 3
       xml.Confidence 0
       xml.PrefixActionCount 0
@@ -702,7 +700,7 @@ class VoiceAttackGenerator
           xml.PairingSet false
           xml.PairingSetElse false
           xml.Ordinal 0
-          xml.ConditionMet 'xsi:nil' => true
+          xml.ConditionMet "xsi:nil" => true
           xml.IndentLevel 0
           xml.ConditionSkip false
           xml.IsSuffixAction false
@@ -787,7 +785,7 @@ class VoiceAttackGenerator
       xml.CLE 0
       xml.EX1 false
       xml.EX2 false
-      xml.InternalId 'xsi:nil' => true
+      xml.InternalId "xsi:nil" => true
     end
   end
 end

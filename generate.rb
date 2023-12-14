@@ -1,34 +1,36 @@
-require 'optparse'
-require 'pathname'
+# frozen_string_literal: true
 
-require 'bundler'
+require "optparse"
+require "pathname"
+
+require "bundler"
 Bundler.require
 
 $LOAD_PATH << __dir__
-require 'lib/command_set'
+require "lib/command_set"
 
 FORMATS = %w[vac voiceattack].freeze
-options = {format: 'vac'}
+options = {format: "vac"}
 parser = OptionParser.new do |opts|
   opts.banner = "Usage: generate.rb [options] /path/to/profile.vacc"
 
-  opts.on('-h', '--help', "Prints this help") do
+  opts.on("-h", "--help", "Prints this help") do
     puts parser
     exit
   end
 
-  opts.on('-fFORMAT', '--format=FORMAT', "Specify output format: #{FORMATS.join(', ')}") do |f|
+  opts.on("-fFORMAT", "--format=FORMAT", "Specify output format: #{FORMATS.join(", ")}") do |f|
     options[:format] = f
   end
 end
 parser.parse!
 
 generator = case options[:format]
-              when 'vac'
-                require 'lib/vac_generator'
+              when "vac"
+                require "lib/vac_generator"
                 VACGenerator
-              when 'voiceattack'
-                require 'lib/voiceattack_generator'
+              when "voiceattack"
+                require "lib/voiceattack_generator"
                 VoiceAttackGenerator
               else
                 puts parser
@@ -41,4 +43,4 @@ end
 
 command_set = CommandSet.parse(Pathname(ARGV.first))
 profile = generator.new(command_set)
-puts profile.to_s
+puts profile

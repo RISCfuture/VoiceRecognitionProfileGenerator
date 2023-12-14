@@ -1,11 +1,13 @@
-require 'lib/command_set'
+# frozen_string_literal: true
+
+require "lib/command_set"
 
 class VACGenerator
   attr_reader :command_set
 
   def initialize(command_set)
     @command_set = command_set
-    @builder     = Nokogiri::XML::Builder.new(&method(:generate_xml))
+    @builder     = Nokogiri::XML::Builder.new { generate_xml(_1) }
   end
 
   def to_s() @builder.to_xml(indent: 4) end
@@ -16,9 +18,9 @@ class VACGenerator
     xml.profile do
       command_set.each_command { |command| output_command xml, command }
 
-      xml.set key:  'NONE', key1: 'NONE', vackey1: 'NONE', vackey2: 'NONE',
-              ptamode: 'default', off: 'NONE', off1: 'NONE', off2: 'NONE',
-              off3: 'NONE'
+      xml.set key:  "NONE", key1: "NONE", vackey1: "NONE", vackey2: "NONE",
+              ptamode: "default", off: "NONE", off1: "NONE", off2: "NONE",
+              off3: "NONE"
     end
   end
 
@@ -29,16 +31,16 @@ class VACGenerator
       command.macro.each do |keystroke|
         if extended?(keystroke)
           xml.key extended:  keystroke,
-                  extended2: 'NONE',
-                  qual:      'NONE',
+                  extended2: "NONE",
+                  qual:      "NONE",
                   pause:     60,
                   repeat:    1,
                   duration:  60
         else
           xml.key value:     keystroke,
-                  extended:  'NONE',
-                  extended2: 'NONE',
-                  qual:      'NONE',
+                  extended:  "NONE",
+                  extended2: "NONE",
+                  qual:      "NONE",
                   pause:     60,
                   repeat:    1,
                   duration:  60

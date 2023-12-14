@@ -30,7 +30,7 @@ Assuming you have a profile already written as `profile.vacc`, you can generate
 a VAC profile by simply running:
 
 ``` sh
-ruby generate.rb -f=vac /path/to/profile.vacc > profile.xml
+ruby generate.rb -fvac /path/to/profile.vacc > profile.xml
 ```
 
 You can then import this profile in VAC.
@@ -38,7 +38,7 @@ You can then import this profile in VAC.
 Likewise, to generate a VoiceAttack profile:
 
 ``` sh
-ruby generate.rb -f=voiceattack /path/to/profile.vacc > profile.vap
+ruby generate.rb -fvoiceattack /path/to/profile.vacc > profile.vap
 ```
 
 You can then import this profile in VoiceAttack.
@@ -51,8 +51,8 @@ phrase to use to invoke the macro:
 
 ```
 a Fire Torpedoes
-wd Wave and Dance 
-``` 
+wd Wave and Dance
+```
 
 You can add multiple phrase aliases by comma-separating phrases:
 

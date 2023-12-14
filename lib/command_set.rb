@@ -1,4 +1,6 @@
-require 'active_support/core_ext/object/blank'
+# frozen_string_literal: true
+
+require "active_support/core_ext/object/blank"
 
 class CommandSet
   attr_reader :name, :commands
@@ -18,16 +20,16 @@ class CommandSet
     end
   end
 
-  INDENT_RX              = /(?<indent>(?:\t| {2})*)/.freeze
-  EXTENDED_KEYSTROKES_RX = /F[1-9]|F1[0-5]/.freeze
-  KEYSTROKE_RX           = /(?<keystroke>[^ ]|#{EXTENDED_KEYSTROKES_RX})/.freeze
-  PHRASES_RX             = /(?<phrases>[^&*]+?)/.freeze
-  ALIAS_DEFINITION_RX    = /(?:&(?<aliasdef>\w+))?/.freeze
-  ALIAS_REFERENCE_RX     = /(?:\*(?<aliasref>\w+))?/.freeze
-  ALIAS_DEF_OR_REF_RX    = /#{ALIAS_DEFINITION_RX}|#{ALIAS_REFERENCE_RX}/.freeze
-  PHRASE_ALIAS_RX        = /#{PHRASES_RX}(?: #{ALIAS_DEF_OR_REF_RX})?/.freeze
-  ALIAS_ONLY_RX          = /(?:#{ALIAS_DEF_OR_REF_RX})?/.freeze
-  LINE_RX                = /^#{INDENT_RX}#{KEYSTROKE_RX}(?: #{PHRASE_ALIAS_RX}| #{ALIAS_ONLY_RX})?$/.freeze
+  INDENT_RX              = /(?<indent>(?:\t| {2})*)/
+  EXTENDED_KEYSTROKES_RX = /F[1-9]|F1[0-5]/
+  KEYSTROKE_RX           = /(?<keystroke>[^ ]|#{EXTENDED_KEYSTROKES_RX})/
+  PHRASES_RX             = /(?<phrases>[^&*]+?)/
+  ALIAS_DEFINITION_RX    = /(?:&(?<aliasdef>\w+))?/
+  ALIAS_REFERENCE_RX     = /(?:\*(?<aliasref>\w+))?/
+  ALIAS_DEF_OR_REF_RX    = /#{ALIAS_DEFINITION_RX}|#{ALIAS_REFERENCE_RX}/
+  PHRASE_ALIAS_RX        = /#{PHRASES_RX}(?: #{ALIAS_DEF_OR_REF_RX})?/
+  ALIAS_ONLY_RX          = /(?:#{ALIAS_DEF_OR_REF_RX})?/
+  LINE_RX                = /^#{INDENT_RX}#{KEYSTROKE_RX}(?: #{PHRASE_ALIAS_RX}| #{ALIAS_ONLY_RX})?$/
 
   def self.parse(pathname)
     set     = new(pathname.basename(pathname.extname))
@@ -61,7 +63,7 @@ class CommandSet
       end
 
       current_indent = indent
-      command        = Command.new(keystroke, parent: current_parent, phrases: phrases)
+      command        = Command.new(keystroke, parent: current_parent, phrases:)
       set.commands << command
 
       if (alias_name = matches[:aliasdef].presence)
@@ -78,15 +80,15 @@ class CommandSet
     return set
   end
 
-  def inspect()
+  def inspect
     "#<#{self.class} (#{each_command.count} commands)>"
   end
 
-  def self.copy_alias(root_command, alias_root_command)
+  def self.copy_alias(root_command, alias_root_command, &)
     alias_root_command.children.each do |alias_child|
       root_child = Command.new(alias_child.keystroke, parent: root_command, phrases: alias_child.phrases)
       yield root_child
-      copy_alias(root_child, alias_child) { |grandchild| yield grandchild }
+      copy_alias(root_child, alias_child, &)
     end
   end
 
@@ -117,12 +119,10 @@ class Command
   def full_phrases
     return phrases if top_level?
 
-    if phrases.empty?
-      return parent.full_phrases
-    else
-      return phrases.flat_map do |phrase|
-        parent.full_phrases.map { |pp| "#{pp} #{phrase}" }
-      end
+    return parent.full_phrases if phrases.empty?
+
+    return phrases.flat_map do |phrase|
+      parent.full_phrases.map { |pp| "#{pp} #{phrase}" }
     end
   end
 

@@ -1,4 +1,6 @@
-source 'https://rubygems.org'
+# frozen_string_literal: true
 
-gem 'activesupport', require: nil
-gem 'nokogiri'
+source "https://rubygems.org"
+
+gem "activesupport", require: nil
+gem "nokogiri"
