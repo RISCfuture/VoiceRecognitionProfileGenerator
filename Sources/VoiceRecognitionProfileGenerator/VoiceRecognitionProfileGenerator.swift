@@ -14,31 +14,37 @@ struct VoiceRecognitionProfileGenerator: AsyncParsableCommand {
     @Option(name: .shortAndLong, help: "A name for the profile (not used by VAC)")
     var name: String? = nil
     
-    @Argument(help: "The path to the command set file", transform: { URL(fileURLWithPath: $0) })
+    @Argument(help: "The path to the command set file", transform: { URL(filePath: $0, directoryHint: .notDirectory) })
     var commands: URL
     
     mutating func run() throws {
-        let name = name != nil ? name! : commands.deletingPathExtension().lastPathComponent
+        let name = self.name
+        let commands = self.commands
+        let format = self.format
         
-        let parser = try CommandFileParser(name: name, url: commands)
-        do {
-            try parser.parse()
-        } catch {
-            printStderr("Error while parsing \(commands.lastPathComponent):")
-            Self.exit(withError: error)
+        Task { @MainActor in
+            let name = name != nil ? name! : commands.deletingPathExtension().lastPathComponent
+            
+            let parser = try CommandFileParser(name: name, url: commands)
+            do {
+                try parser.parse()
+            } catch {
+                printStderr("Error while parsing \(commands.lastPathComponent):")
+                Self.exit(withError: error)
+            }
+            
+            let generator: Generator = switch format {
+                case .vac: VACGenerator(commands: parser.set)
+                case .voiceAttack: VoiceAttackGenerator(commands: parser.set)
+            }
+            
+            let profile = try generator.generate()
+            print(profile)
         }
-        
-        let generator: Generator = switch format {
-        case .vac: VACGenerator(commands: parser.set)
-        case .voiceAttack: VoiceAttackGenerator(commands: parser.set)
-        }
-        
-        let profile = try generator.generate()
-        print(profile)
     }
-    
-    private func printStderr(_ string: String) {
-        fputs(string + "\n", stderr)
-    }
+}
+
+fileprivate func printStderr(_ string: String) {
+    fputs(string + "\n", stderr)
 }
 

@@ -11,7 +11,7 @@ class CommandFileParser {
     }
     
     convenience init(name: String, url: URL) throws {
-        self.init(name: name, string: try String(contentsOf: url))
+        self.init(name: name, string: try String(contentsOf: url, encoding: .ascii))
     }
     
     convenience init(name: String, data: Data) throws {
@@ -21,6 +21,7 @@ class CommandFileParser {
         self.init(name: name, string: string)
     }
    
+    @MainActor
     func parse() throws {
         var parentStack = Array<Command>()
         
