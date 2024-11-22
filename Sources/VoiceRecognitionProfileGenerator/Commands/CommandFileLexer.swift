@@ -1,5 +1,5 @@
 import Foundation
-import RegexBuilder
+@preconcurrency import RegexBuilder
 
 struct Token {
     let indent: Array<Substring>
@@ -11,6 +11,7 @@ struct Token {
     var indentLevel: Int { indent.count }
 }
 
+@MainActor
 enum CommandFileLexer {
     private static let indentsRef = Reference(Substring.self)
     private static let keystrokesRef = Reference(Substring.self)
