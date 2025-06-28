@@ -43,3 +43,7 @@ playground.xcworkspace
 *.xcodeproj
 .build
 .swiftpm
+
+
+# SwiftLint Remote Config Cache
+.swiftlint/RemoteConfigCache

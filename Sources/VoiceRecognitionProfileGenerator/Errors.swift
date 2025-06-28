@@ -14,35 +14,34 @@ extension CommandFileErrors: LocalizedError {
     var errorDescription: String? {
         switch self {
             case .badEncoding:
-                return NSLocalizedString("File must be ASCII-encoded only.", comment: "command file error")
+                return String(localized: "File must be ASCII-encoded only.", bundle: Bundle.module, comment: "command file error")
             case let .missingKeystroke(line):
-                let error = NSLocalizedString("Each line must start with a keystroke.", comment: "command file error")
+                let error = String(localized: "Each line must start with a keystroke.", bundle: Bundle.module, comment: "command file error")
                 return prependLine(error: error, line: line)
             case let .badFormat(line):
-                let error = NSLocalizedString("Bad formatting for line.", comment: "command file error")
+                let error = String(localized: "Bad formatting for line.", bundle: Bundle.module, comment: "command file error")
                 return prependLine(error: error, line: line)
             case let .unexpectedIndent(line):
-                let error = NSLocalizedString("Unexpected indent.", comment: "command file error")
+                let error = String(localized: "Unexpected indent.", bundle: Bundle.module, comment: "command file error")
                 return prependLine(error: error, line: line)
             case let .badKeystroke(keystroke, line):
-                let format = NSLocalizedString("Couldn’t understand keystroke.", comment: "command file error")
+                let format = String(localized: "Couldn’t understand keystroke.", bundle: Bundle.module, comment: "command file error")
                 return prependLine(error: String(format: format, keystroke), line: line)
             case let .unknownAlias(name, line):
-                let format = NSLocalizedString("Unknown alias “%@”.", comment: "command file error")
+                let format = String(localized: "Unknown alias “%@”.", bundle: Bundle.module, comment: "command file error")
                 return prependLine(error: String(format: format, name), line: line)
             case let .aliasNameInUse(name, line):
-                let format = NSLocalizedString("Alias “%@” defined twice.", comment: "command file error")
+                let format = String(localized: "Alias “%@” defined twice.", bundle: Bundle.module, comment: "command file error")
                 return prependLine(error: String(format: format, name), line: line)
         }
     }
-    
+
     private func prependLine(error: String, line: Int?) -> String {
-        if let line = line {
-            let format = NSLocalizedString("Line %d: %@", comment: "error with line number")
+        if let line {
+            let format = String(localized: "Line %d: %@", bundle: Bundle.module, comment: "error with line number")
             return String(format: format, line, error)
-        } else {
-            return error
         }
+        return error
     }
 }
 
@@ -55,10 +54,10 @@ extension GeneratorErrors: LocalizedError {
     var errorDescription: String? {
         switch self {
             case let .unsupportedKeystroke(keystroke):
-                let format = NSLocalizedString("Keystroke “%@” is not supported.", comment: "generator error")
+                let format = String(localized: "Keystroke “%@” is not supported.", bundle: Bundle.module, comment: "generator error")
                 return String(format: format, keystroke.localizedDescription)
             case .chordingUnsupported:
-                return NSLocalizedString("Multiple simultaneous keystrokes (chording) is not supported.", comment: "generator error")
+                return String(localized: "Multiple simultaneous keystrokes (chording) is not supported.", bundle: Bundle.module, comment: "generator error")
         }
     }
 }
