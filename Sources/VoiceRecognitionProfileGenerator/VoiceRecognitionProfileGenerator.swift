@@ -8,6 +8,25 @@ enum OutputFormat: String, ExpressibleByArgument {
 
 @main
 struct VoiceRecognitionProfileGenerator: AsyncParsableCommand {
+    static let configuration = CommandConfiguration(
+        commandName: "generate-profile",
+        abstract: "Generates VoiceAttack and VAC profiles from a simple rules file.",
+        usage: """
+            This tool generates both VAC (https://www.dwvac.com) and VoiceAttack
+            (https://voiceattack.com) profiles for voice recognition intended
+            for use in video gaming. **VAC** is a simple voice recognition macro
+            utility that recognizes voice commands and executes keyboard and
+            mouse macros. VoiceAttack is similar to VAC but has much more complex
+            macro tools. Both are intended for video gamers to allow hands-off
+            control of their games.
+
+            This script reads voice commands generated from a simple, easy-to-write
+            nested domain-specific language (DSL). The DSL is optimized for games
+            that use nested menus for generating commands that communicate with
+            NPCs.
+            """
+    )
+
     @Option(name: .shortAndLong, help: "The format to output")
     var format = OutputFormat.vac
 

@@ -25,7 +25,7 @@ phrase "Team Defend Our Base" that typed `F1` then `b`.
 ## Requirements and Installation
 
 Compiling this tool requires a Mac* running macOS 14 or newer, with Xcode
-installed. Swift 5.9 or newer is required.
+installed. Swift 6.0 or newer is required.
 
 To compile this tool, simply run `swift build -c release`. The generated binary
 will be in `.build/release/generate-profile`. You can then move the binary
