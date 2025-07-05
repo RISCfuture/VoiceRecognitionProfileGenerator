@@ -3,21 +3,23 @@ q A Wacs, Sentry, Chalice, Dragnet
   2 Declare
   3 Request Help
   4 Wilco
-  5 Unable
-  6 Checking In
-  7 Checking Out
-  8 Request Relief
-  9 Request Res Cap, Request Rescue Chopper
+  5 Judy, Judy Judy
+  6 Unable
+  7 Checking In
+  8 Checking Out
+  9 Request Relief
   q Vector, Alpha Check
     1 Threat
     2 Target
     3 Package
-    4 Tanker
-    5 Divert Field
-    6 Father, Home Plate
-    7 Mother, Carrier
+    4 Tanker, Fragged Tanker
+    5 Nearest Tanker
+    6 Divert Field
+    7 Father, Home Plate
+    8 Mother, Carrier
   q
     1 Bogey Dope
+    9 Request Res Cap, Request Rescue Chopper
 
 w Two
   1 Attack My Target
@@ -34,9 +36,10 @@ w Two
     2 Split
     3 Glue
     4 Punch Stores
-    5 Zap Cursor
-    6 Go Shooter
-    7 Go Cover
+    5 Punch Tanks, Punch Bags
+    6 Zap Cursor
+    7 Go Shooter
+    8 Go Cover
     w
       1 Go Offensive Pursuit
       2 Go Offensive Split
@@ -95,7 +98,7 @@ w Two
                 7 Smoke Off
                 8 Push Flight Uniform
                 9 Push Flight Victor
-                0 Set Bingo
+                0 Set Bingo, Reset Bingo
                 w
                   1 Line Up Single Ship
                   2 Line Up Element, Line Up Two Ship
@@ -113,7 +116,8 @@ e Three
   e
     1 Rejoin
     2 Punch Stores
-    3 Zap Cursor
+    3 Punch Tanks, Punch Bags
+    4 Zap Cursor
     e
       1 Go Offensive Pursuit
       2 Go Offensive Split
@@ -171,7 +175,7 @@ e Three
                 7 Smoke Off
                 8 Push Flight Uniform
                 9 Push Flight Victor
-                0 Set Bingo
+                0 Set Bingo, Reset Bingo
 
 r Flight
   1 Attack My Target
@@ -186,7 +190,8 @@ r Flight
   r
     1 Rejoin
     2 Punch Stores
-    3 Zap Cursor
+    3 Punch Tanks, Punch Bags
+    4 Zap Cursor
     r
       1 Resume Mission
       2 Return to Base, R T B
@@ -244,7 +249,7 @@ r Flight
                 7 Smoke Off
                 8 Push Flight Uniform
                 9 Push Flight Victor
-                0 Set Bingo
+                0 Set Bingo, Reset Bingo
                 r
                   1 Line Up Single Ship
                   2 Line Up Elements
@@ -257,6 +262,7 @@ t Chief, Crew Chief
   2 Set Chocks, Place Chocks, Pull Chocks
   5 Request Refuel
   7 Recharge the J F S, Recharge J F S
+  8 Preflight Check
   t
     t
       t
@@ -286,7 +292,7 @@ t Ground
 
 t Tower
   t
-    1 Ready for Departure, Ready for Release, Ready for Takeoff
+    1 Ready for Departure, Ready for Release
     2 Request Landing
     3 Request Element Landing, Request Flight Landing
     4 On Final, Established
@@ -308,7 +314,7 @@ t Approach
       4 Request Radar Vectors Heavy
       5 Request the Overhead
       6 Request the Visual, Request Straight In
-      6 Request the Visual Heavy, Request Straight In Heavy
+      7 Request the Visual Heavy, Request Straight In Heavy
       t
         5 Declaring an Emergency
         6 Aborting
@@ -345,9 +351,10 @@ y Tanker, Camel, Canteen, Texaco
   1 Request Rejoin
   2 Ready Pre Contact
   3 Topped Off
-  4 Request Single Ship Rejoin
-  5 Request Element Rejoin
-  6 Say Again
+  4 Flight Split
+  5 Request Single Ship Rejoin
+  6 Request Element Rejoin
+  7 Say Again
 
 y Jay Tac
   y
