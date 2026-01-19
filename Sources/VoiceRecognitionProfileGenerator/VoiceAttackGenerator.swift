@@ -1,33 +1,5 @@
 import Foundation
 
-private extension CommandSet {
-  func isPrefix(_ command: Command) -> Bool {
-    command.isTopLevel && hasChildren(command)
-  }
-
-  func compositeGroup(_ command: Command) -> String {
-    let source = isPrefix(command) ? command : command.root
-    return source.phrases.first ?? ""
-  }
-}
-
-private extension Command {
-  var suffixPhrases: [String] {
-    guard let parent else {
-      preconditionFailure("suffixPhrases method should not be called on root nodes")
-    }
-    if parent.isTopLevel { return phrases }
-    if phrases.isEmpty { return parent.suffixPhrases }
-    if parent.suffixPhrases.isEmpty { return phrases }
-
-    return phrases.flatMap { phrase in
-      parent.suffixPhrases.map { parentPhrase in
-        "\(parentPhrase) \(phrase)"
-      }
-    }
-  }
-}
-
 private extension XMLElement {
   static let xsiNil = ["xsi:nil": "true"]
 
@@ -136,7 +108,7 @@ class VoiceAttackGenerator: Generator {
     // Commands section
     let commandsNode = XMLElement(name: "Commands")
     try commands.each { command in
-      guard commands.isPrefix(command) || commands.isReal(command) else { return }
+      guard commands.isReal(command) else { return }
       try commandsNode.addChild(xmlElement(for: command))
     }
     root.addChild(commandsNode)
@@ -233,9 +205,7 @@ class VoiceAttackGenerator: Generator {
   }
 
   private func xmlElement(for command: Command) throws -> XMLElement {
-    let commandString =
-      commands.isPrefix(command)
-      ? command.phrases.joined(separator: ";") : command.suffixPhrases.joined(separator: ";")
+    let commandString = command.fullPhrase
 
     let node = XMLElement(name: "Command")
 
@@ -270,15 +240,11 @@ class VoiceAttackGenerator: Generator {
     ])
 
     // ActionSequence
-    if commands.isReal(command) {
-      try node.addChild(actionSequenceElement(for: command))
-    } else {
-      node.addChild(XMLElement(name: "ActionSequence"))
-    }
+    try node.addChild(actionSequenceElement(for: command))
 
     // Post-ActionSequence fields
     node.addChildren([
-      "Async": commands.isReal(command) ? "false" : "true",
+      "Async": "false",
       "Enabled": "true",
       "UseShortcut": "false",
       "keyValue": "0",
@@ -291,7 +257,7 @@ class VoiceAttackGenerator: Generator {
       "onlyKeyUp": "false",
       "RepeatNumber": "0",
       "RepeatType": "0",
-      "CommandType": commands.isPrefix(command) ? "1" : "2",
+      "CommandType": "0",
       "SourceProfile": Self.guidNil,
       "UseConfidence": "false",
       "minimumConfidenceLevel": "0",

@@ -25,6 +25,14 @@ class Command {
     }
   }
 
+  /// Single phrase using VoiceAttack bracket syntax for alternatives
+  var fullPhrase: String {
+    let current = phrases.count == 1 ? phrases[0] : "[\(phrases.joined(separator: ";"))]"
+    guard let parent else { return current }
+    if phrases.isEmpty { return parent.fullPhrase }
+    return "\(parent.fullPhrase) \(current)"
+  }
+
   var root: Command { parent?.root ?? self }
 
   init(keystrokes: [Keystroke], phrases: [String] = [], parent: Command? = nil) {
