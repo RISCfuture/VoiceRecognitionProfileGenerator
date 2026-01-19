@@ -20,7 +20,7 @@ extension XMLElement {
     attributes.forEach { setAttribute(name: $0, value: $1) }
   }
 
-  func addChildren(_ children: [String: String?]) {
+  func addChildren(_ children: KeyValuePairs<String, String?>) {
     children.forEach { name, value in
       addChild(XMLElement(name: name, stringValue: value))
     }

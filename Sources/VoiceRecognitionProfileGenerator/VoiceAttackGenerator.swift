@@ -125,9 +125,24 @@ class VoiceAttackGenerator: Generator {
       ]
     )
     let xml = XMLDocument(rootElement: root)
+
+    // Profile header: HasMB, Id, Name first
     root.addChildren([
       "HasMB": "false",
       "Id": UUID().uuidString.lowercased(),
+      "Name": commands.name
+    ])
+
+    // Commands section
+    let commandsNode = XMLElement(name: "Commands")
+    try commands.each { command in
+      guard commands.isPrefix(command) || commands.isReal(command) else { return }
+      try commandsNode.addChild(xmlElement(for: command))
+    }
+    root.addChild(commandsNode)
+
+    // Profile properties after Commands
+    root.addChildren([
       "OverrideGlobal": "false",
       "GlobalHotkeyIndex": "0",
       "GlobalHotkeyEnabled": "false",
@@ -154,46 +169,65 @@ class VoiceAttackGenerator: Generator {
       "GlobalJoystickButton": "0",
       "GlobalJoystickNumber": "0",
       "GlobalJoystickButton2": "0",
-      "GlobalJoystickNumber2": "0",
-      "ExportVAVersion": "1.7.5",
-      "ExportOSVersionMajor": "6",
-      "ExportOSVersionMinor": "2",
+      "GlobalJoystickNumber2": "0"
+    ])
+    root.addNilChildren("ReferencedProfile")
+    root.addChildren([
+      "ExportVAVersion": "2.1.8",
+      "ExportOSVersionMajor": "10",
+      "ExportOSVersionMinor": "0",
       "OverrideConfidence": "false",
       "Confidence": "0",
-      "CatchAllEnabled": "false",
-      "InitializeCommandEnabled": "false",
+      "CatchAllEnabled": "false"
+    ])
+    root.addNilChildren("CatchAllId")
+    root.addChildren([
+      "InitializeCommandEnabled": "false"
+    ])
+    root.addNilChildren("InitializeCommandId")
+    root.addChildren([
       "UseProcessOverride": "false",
       "ProcessOverrideAciveWindow": "true",
-      "DictationCommandEnabled": "false",
-      "EnableProfileSwitch": "false",
+      "DictationCommandEnabled": "false"
+    ])
+    root.addNilChildren("DictationCommandId")
+    root.addChildren([
+      "EnableProfileSwitch": "false"
+    ])
+    root.addChild(XMLElement(name: "CategoryGroups"))
+    root.addChildren([
       "GroupCategory": "false",
       "LastEditedCommand": Self.guidNil,
       "IS": "0",
       "IO": "0",
       "IP": "0",
       "BE": "0",
-      "UnloadCommandEnabled": "false",
-      "BlockExternal": "false",
-      "CR": "0",
-
-      "Name": commands.name
+      "UnloadCommandEnabled": "false"
     ])
-    root.addNilChildren(
-      "ReferencedProfile",
-      "CatchAllId",
-      "DictationCommandId",
-      "UnloadCommandId",
-      "AuthorID",
-      "ProductID",
-      "InternalID"
-    )
-
-    let commandsNode = XMLElement(name: "Commands")
-    try commands.each { command in
-      guard commands.isPrefix(command) || commands.isReal(command) else { return }
-      try commandsNode.addChild(xmlElement(for: command))
-    }
-    root.addChild(commandsNode)
+    root.addNilChildren("UnloadCommandId")
+    root.addChildren([
+      "BlockExternal": "false"
+    ])
+    root.addNilChildren("AuthorID", "ProductID")
+    root.addChildren([
+      "CR": "0",
+      "InternalID": UUID().uuidString.lowercased(),
+      "PR": "0",
+      "CO": "0",
+      "OP": "0",
+      "CV": "0",
+      "PD": "0",
+      "PE": "0",
+      "ExecOnRecognizedEnabled": "false"
+    ])
+    root.addNilChildren("ExecOnRecognizedId")
+    root.addChildren([
+      "ExecOnRecognizedRejected": "false",
+      "ExcludeGlobalProfiles": "false",
+      "DisableAdvancedTTS": "false",
+      "RPR": "0",
+      "Deleted": "false"
+    ])
 
     return xml.xmlString(options: .nodePrettyPrint)
   }
@@ -204,6 +238,11 @@ class VoiceAttackGenerator: Generator {
       ? command.phrases.joined(separator: ";") : command.suffixPhrases.joined(separator: ";")
 
     let node = XMLElement(name: "Command")
+
+    // Referrer (xsi:nil) first
+    node.addNilChildren("Referrer")
+
+    // ExecType through SessionEnabled
     node.addChildren([
       "ExecType": "3",
       "Confidence": "0",
@@ -219,7 +258,27 @@ class VoiceAttackGenerator: Generator {
       "BaseId": UUID().uuidString.lowercased(),
       "OriginId": Self.guidNil,
       "SessionEnabled": "true",
+      // New fields for v2.1.8
+      "DoubleTapInvoked": "false",
+      "SingleTapDelayedInvoked": "false",
+      "LongTapInvoked": "false",
+      "ShortTapDelayedInvoked": "false",
+      "SleepFlag": "0",
+      // Id and CommandString
       "Id": UUID().uuidString.lowercased(),
+      "CommandString": commandString
+    ])
+
+    // ActionSequence
+    if commands.isReal(command) {
+      try node.addChild(actionSequenceElement(for: command))
+    } else {
+      node.addChild(XMLElement(name: "ActionSequence"))
+    }
+
+    // Post-ActionSequence fields
+    node.addChildren([
+      "Async": commands.isReal(command) ? "false" : "true",
       "Enabled": "true",
       "UseShortcut": "false",
       "keyValue": "0",
@@ -230,8 +289,9 @@ class VoiceAttackGenerator: Generator {
       "keyPassthru": "true",
       "UseSpokenPhrase": "true",
       "onlyKeyUp": "false",
-      "RepeatNumber": "2",
+      "RepeatNumber": "0",
       "RepeatType": "0",
+      "CommandType": commands.isPrefix(command) ? "1" : "2",
       "SourceProfile": Self.guidNil,
       "UseConfidence": "false",
       "minimumConfidenceLevel": "0",
@@ -246,7 +306,7 @@ class VoiceAttackGenerator: Generator {
       "ProcessOverrideActiveWindow": "true",
       "LostFocusStop": "false",
       "PauseLostFocus": "false",
-      "LostFocusBackCompat": "true",
+      "LostFocusBackCompat": "false",
       "UseMouse": "false",
       "Mouse1": "false",
       "Mouse2": "false",
@@ -273,21 +333,25 @@ class VoiceAttackGenerator: Generator {
       "CLE": "0",
       "EX1": "false",
       "EX2": "false",
-
-      "CommandString": commandString,
-      "Async": commands.isReal(command) ? "false" : "true",
-      "Description": command.phrases.first ?? command.name,
-      "Category": command.root.phrases.first ?? "Uncategorized",
-      "CommandType": commands.isPrefix(command) ? "1" : "2",
-      "CompositeGroup": commands.compositeGroup(command)
+      // New fields at end for v2.1.8
+      "InternalId": UUID().uuidString.lowercased()
     ])
-    node.addNilChildren("Referrer", "InternalId")
-
-    if commands.isReal(command) {
-      try node.addChild(actionSequenceElement(for: command))
-    } else {
-      node.addChild(XMLElement(name: "ActionSequence"))
-    }
+    node.addNilChildren("HasInput")
+    node.addChildren([
+      "HotkeyDoubleTapLevel": "0",
+      "MouseDoubleTapLevel": "0",
+      "JoystickDoubleTapLevel": "0",
+      "HotkeyLongTapLevel": "0",
+      "MouseLongTapLevel": "0",
+      "JoystickLongTapLevel": "0",
+      "AlwaysExec": "false",
+      "ResourceBalance": "0",
+      "PreventExec": "false",
+      "ExternalEventsEnabled": "false",
+      "ExcludeExecOnRecognized": "false",
+      "UseVariableMouseShortcut": "false",
+      "UseVariableJoystickShortcut": "false"
+    ])
 
     return node
   }
@@ -309,21 +373,33 @@ class VoiceAttackGenerator: Generator {
 
   private func commandAction(for keystroke: Keystroke, index: Int) throws -> XMLElement {
     let node = XMLElement(name: "CommandAction")
-    let caption = "Press \(keystroke.localizedDescription) key and hold for 0.1 seconds and release"
 
     node.addChildren([
       "PairingSet": "false",
       "PairingSetElse": "false",
-      "Ordinal": String(index),
+      "Ordinal": String(index)
+    ])
+    node.addNilChildren("ConditionMet")
+    node.addChildren([
       "IndentLevel": "0",
       "ConditionSkip": "false",
       "IsSuffixAction": "false",
       "DecimalTransient1": "0",
-      "id": UUID().uuidString.lowercased(),
+      "Id": UUID().uuidString.lowercased(),
       "ActionType": "PressKey",
-      "Duration": "0.1",
-      "Delay": "0",
-      "Context": nil,
+      "Duration": "0",
+      "Delay": "0"
+    ])
+
+    // KeyCodes before X/Y/Z
+    let keyCodes = XMLElement(name: "KeyCodes")
+    guard let keyCode = try Self.keyCode(for: keystroke) else {
+      throw GeneratorErrors.unsupportedKeystroke(keystroke)
+    }
+    keyCodes.addChild(XMLElement(name: "unsignedShort", stringValue: String(keyCode)))
+    node.addChild(keyCodes)
+
+    node.addChildren([
       "X": "0",
       "Y": "0",
       "Z": "0",
@@ -336,22 +412,15 @@ class VoiceAttackGenerator: Generator {
       "ConditionStartType": "0",
       "DecimalContext1": "0",
       "DecimalContext2": "0",
-      "DateContext1": "0001-01-01T00:00:00",
-      "DateContext2": "0001-01-01T00:00:00",
-      "Disabled": "false",
-      "RandomSounds": nil,
-
-      "_caption": caption,
-      "Caption": caption
+      "DateContext1": "0001-01-01T08:00:00Z",
+      "DateContext2": "0001-01-01T08:00:00Z",
+      "Disabled": "false"
     ])
-    node.addNilChildren("ConditionMet")
-
-    let keyCodes = XMLElement(name: "KeyCodes")
-    guard let keyCode = try Self.keyCode(for: keystroke) else {
-      throw GeneratorErrors.unsupportedKeystroke(keystroke)
-    }
-    keyCodes.addChild(XMLElement(name: "unsignedShort", stringValue: String(keyCode)))
-    node.addChild(keyCodes)
+    node.addChild(XMLElement(name: "RandomSounds"))
+    node.addChildren([
+      "IntegerContext1": "0",
+      "IntegerContext2": "0"
+    ])
 
     return node
   }
