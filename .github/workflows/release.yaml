@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: '6.0'
+
+      - name: Build
+        run: swift build -c release
+
+      - name: Generate Profiles
+        run: |
+          mkdir -p output
+          for vacc in Definitions/*.vacc; do
+            name=$(basename "$vacc" .vacc)
+            .build/release/generate-profile -f=vac "$vacc" > "output/${name}.xml"
+            .build/release/generate-profile -f=voiceattack "$vacc" > "output/${name}.vap"
+          done
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: output/*
+          generate_release_notes: true
