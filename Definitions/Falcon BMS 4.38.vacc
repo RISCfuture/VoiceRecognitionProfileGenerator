@@ -1,4 +1,10 @@
-q A Wacs, Sentry, Chalice, Dragnet
+{airbases}: Osan, Gunsan, Seosan, Suwon, Seoul, Gimpo, Gimhae, Inchon, Daegu, Gwangju, Jungwon, Cheongju, Gangneung, Wonju, Pohang, Sacheon, Yecheon, Muan, Yangyang
+{flightNames}: Falcon, Gamble, Hawkeye, Plasma, Warhawk, Cyborg, Mudhen, Weasel, Bulldog, Cajun, Beast, Satan, Mustang, Panther, Banshee, Spade, Viper, Jaguar, Mako, Jackal, Cobra, Hammer, Tomcat, Wildcat, Diamond, Hornet, Avenger, Wagon, Fist, Gypsy, Vulture, Sting, Bug, Phantom, Magnet, Roach, Zipper, Vandal, Stud, Trojan, Rider, Lightning, Vapor, Mirage, Rafale, Tornado, Dart, Goblin, Gunhog, Slick, Troll, Tiger, Lynx, Ramrod, Hog, Rumble, Devil, Lancer, Sawbuck, Mohawk, Gator, Eagle, Harrier, Jump, Caddy, Prowler, Raven, Buckskin, Amber, Mack, Stingray, Checker, Argos, Venus, Gauntlet, Chowder, Bluebell, Stonecat, Eyeball, Hopper, Hostage, Warhog, Glass, Blood, Serpent, Turkey, Garbo, Mauler, Screwbird, Canteen, Redwolf, Mongo, Tempest, Crimson, Barrel, Ragdoll, Sherpa, Nightwing, Rapier, Fenwick, Dolphin, Tracker, Poacher, Redtail, Buzzsaw, Smoke, Nightmare, Ghost, Charger, Cowboy, Snake, Dipper, Knight, Buzzard, Python, Rocket, Bat, Lobo, Scout, Bison, Bull, Claw, Hunter, Viking, Cougar, Talon, Intruder, Skyhawk, Hawk, Thunder, Fury, Spirit, Buff, Bone, Doom, Spectre, Bronco, Rooster, Dragon, Dog, Voodoo, Nimrod, Blade, Texaco, Copper, Chalice, Sentry, Dragnet, Magic, Blazer, Cheetah, Lion, Boxer, Camel, Hobby, Elvis, Stallion, Jumbo, Shark, Blackjack, Jolly, Nighthawk, Spartan, Rescue, Angel, Blackhawk, Sparky, Puma, Gazelle
+{flightNumbers}: One, Two, Three, Four, Five, Six, Seven, Eight, Nine
+{awacsNames}: Sentry, Chalice, Dragnet, Magic
+{tankerNames}: Texaco, Copper, Camel, Canteen
+
+q {awacsNames} {flightNames} {flightNumbers}
   1 Request Picture
   2 Declare
   3 Request Help
@@ -177,7 +183,7 @@ e Three
                 9 Push Flight Victor
                 0 Set Bingo, Reset Bingo
 
-r Flight
+r {flightNames}, {flightNames} {flightNumbers}
   1 Attack My Target
   2 Buddy Spike
   3 Raygun
@@ -275,7 +281,7 @@ t Chief, Crew Chief
                 3 Abort Dash Three
                 4 Abort Dash Four
 
-t Ground
+t {airbases} Ground {flightNames} {flightNumbers}
   3 Ready to Taxi
   4 Clear of the Active, Taxi Back, Taxi to Parking
   6 Say Again
@@ -290,7 +296,7 @@ t Ground
             4 Request Active Landing Runway
             5 Wind Check
 
-t Tower
+t {airbases} Tower {flightNames} {flightNumbers}
   t
     1 Ready for Departure, Ready for Release
     2 Request Landing
@@ -305,7 +311,7 @@ t Tower
         t
           t *common
 
-t Approach
+t {airbases} Approach {flightNames} {flightNumbers}
   t
     t
       1 Request Vectors for the Visual
@@ -323,7 +329,7 @@ t Approach
         t
           t *common
 
-t Departure
+t {airbases} Departure {flightNames} {flightNumbers}
   t
     t
       t
@@ -347,7 +353,7 @@ t Mother
               7 Ready for Departure
               8 Airborne
 
-y Tanker, Camel, Canteen, Texaco
+y {tankerNames} {flightNames} {flightNumbers}
   1 Request Rejoin
   2 Ready Pre Contact
   3 Topped Off
@@ -356,7 +362,7 @@ y Tanker, Camel, Canteen, Texaco
   6 Request Element Rejoin
   7 Say Again
 
-y Jay Tac
+y {flightNames} {flightNumbers}, Jay Tac {flightNames} {flightNumbers}
   y
     1 Check In
     2 Ready Keyhole, Ready to Copy, Ready Nine Line

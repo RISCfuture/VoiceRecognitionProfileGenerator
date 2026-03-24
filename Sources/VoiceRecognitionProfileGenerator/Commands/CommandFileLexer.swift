@@ -7,6 +7,7 @@ struct Token {
   let phrases: [String]
   let aliasDefinition: String?
   let aliasReference: String?
+  let expansionDefinition: (name: String, values: [String])?
 
   var indentLevel: Int { indent.count }
 }
@@ -122,7 +123,7 @@ enum CommandFileLexer {
 
   nonisolated(unsafe) private static let phrase = Regex {
     OneOrMore {
-      CharacterClass("A"..."Z", "a"..."z", "0"..."9", .whitespace, .anyOf("'-"))
+      CharacterClass("A"..."Z", "a"..."z", "0"..."9", .whitespace, .anyOf("'-{}"))
     }
   }
 
@@ -165,6 +166,37 @@ enum CommandFileLexer {
     }
   }
 
+  nonisolated(unsafe) private static let expansionNameRef = Reference(Substring.self)
+  nonisolated(unsafe) private static let expansionValuesRef = Reference(Substring.self)
+
+  nonisolated(unsafe) private static let expansionName = Regex {
+    OneOrMore {
+      CharacterClass("A"..."Z", "a"..."z", "0"..."9", .anyOf("_"))
+    }
+  }
+
+  nonisolated(unsafe) private static let expansionValue = Regex {
+    OneOrMore {
+      CharacterClass("A"..."Z", "a"..."z", "0"..."9", .whitespace, .anyOf("'-"))
+    }
+  }
+
+  nonisolated(unsafe) private static let expansionLineRx = Regex {
+    "{"
+    Capture(as: expansionNameRef) { expansionName }
+    "}"
+    ":"
+    ZeroOrMore { CharacterClass(.whitespace) }
+    Capture(as: expansionValuesRef) {
+      expansionValue
+      ZeroOrMore {
+        phraseSeparator
+        expansionValue
+      }
+    }
+    ZeroOrMore { CharacterClass(.whitespace) }
+  }.anchorsMatchLineEndings()
+
   nonisolated(unsafe) private static let lineRx = Regex {
     indents
     keystrokes
@@ -180,6 +212,24 @@ enum CommandFileLexer {
   }.anchorsMatchLineEndings()
 
   static func lex(line: String, lineNumber _: Int?) throws -> Token? {
+    // Try expansion definition line first (has no keystroke)
+    if let expansionMatch = try expansionLineRx.wholeMatch(in: line) {
+      let name = String(expansionMatch[expansionNameRef])
+      let valuesString = expansionMatch[expansionValuesRef]
+      let values = valuesString.matches(of: expansionValue)
+        .map { String(valuesString[$0.range]).trimmingCharacters(in: .whitespaces) }
+        .compactMap { $0.isEmpty ? nil : $0 }
+
+      return Token(
+        indent: [],
+        keystrokes: [],
+        phrases: [],
+        aliasDefinition: nil,
+        aliasReference: nil,
+        expansionDefinition: (name: name, values: values)
+      )
+    }
+
     guard let match = try lineRx.wholeMatch(in: line) else { return nil }
     let phrasesMatch = match[phrasesRef] ?? ""
 
@@ -206,7 +256,8 @@ enum CommandFileLexer {
       keystrokes: keystrokes,
       phrases: phrases,
       aliasDefinition: aliasDefinition.map(String.init),
-      aliasReference: aliasReference.map(String.init)
+      aliasReference: aliasReference.map(String.init),
+      expansionDefinition: nil
     )
   }
 }

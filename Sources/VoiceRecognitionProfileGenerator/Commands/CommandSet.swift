@@ -2,6 +2,7 @@ class CommandSet {
   let name: String
   private var commands = [Command]()
   private var aliases = [String: Command]()
+  private var expansions = [String: [String]]()
   private var childrenByParent = [ObjectIdentifier: [Command]]()
 
   var lastCommand: Command? { commands.last }
@@ -51,6 +52,22 @@ class CommandSet {
   }
 
   func hasAlias(named name: String) -> Bool { aliases[name] != nil }
+
+  func addExpansion(name: String, values: [String]) throws {
+    guard !hasExpansion(named: name) else {
+      throw CommandFileErrors.expansionNameInUse(name, line: nil)
+    }
+    expansions[name] = values
+  }
+
+  func resolveExpansion(_ name: String) throws -> [String] {
+    guard let values = expansions[name] else {
+      throw CommandFileErrors.unknownExpansion(name, line: nil)
+    }
+    return values
+  }
+
+  func hasExpansion(named name: String) -> Bool { expansions[name] != nil }
 
   func copyChildren(of command: Command, to parent: Command?) -> [Command] {
     return childrenFor(command: command).flatMap { child in

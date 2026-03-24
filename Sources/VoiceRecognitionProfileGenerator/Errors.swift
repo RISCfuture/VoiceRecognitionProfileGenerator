@@ -8,6 +8,8 @@ enum CommandFileErrors: Error, Sendable {
   case badKeystroke(_ keystroke: String, line: Int?)
   case unknownAlias(_ alias: String, line: Int?)
   case aliasNameInUse(_ alias: String, line: Int?)
+  case unknownExpansion(_ name: String, line: Int?)
+  case expansionNameInUse(_ name: String, line: Int?)
 }
 
 extension CommandFileErrors: LocalizedError {
@@ -61,6 +63,12 @@ extension CommandFileErrors: LocalizedError {
           comment: "command file error"
         )
         return prependLine(error: String(format: format, name), line: line)
+      case let .unknownExpansion(name, line):
+        let error = "Unknown expansion \"{\(name)}\"."
+        return prependLine(error: error, line: line)
+      case let .expansionNameInUse(name, line):
+        let error = "Expansion \"{\(name)}\" defined twice."
+        return prependLine(error: error, line: line)
     }
   }
 

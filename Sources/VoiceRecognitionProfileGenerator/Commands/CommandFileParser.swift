@@ -36,6 +36,12 @@ class CommandFileParser {
           throw CommandFileErrors.badFormat(line: lineNum)
         }
 
+        // Handle expansion definitions (no keystroke)
+        if let expansion = token.expansionDefinition {
+          try self.set.addExpansion(name: expansion.name, values: expansion.values)
+          return
+        }
+
         if token.indentLevel == parentStack.count + 1 {
           guard let lastCommand = self.set.lastCommand else {
             throw CommandFileErrors.unexpectedIndent(line: lineNum)
@@ -67,7 +73,46 @@ class CommandFileParser {
 
   private func commandFrom(token: Token, parent: Command?, line: Int?) throws -> Command {
     let keystrokes = try keystrokes(from: token.keystrokes.map { String($0) }, line: line)
-    return Command(keystrokes: keystrokes, phrases: token.phrases, parent: parent)
+    let expandedPhrases = try expandPhrases(token.phrases, line: line)
+    return Command(keystrokes: keystrokes, phrases: expandedPhrases, parent: parent)
+  }
+
+  private func expandPhrases(_ phrases: [String], line: Int?) throws -> [String] {
+    var results = phrases.isEmpty ? [""] : phrases
+
+    // Replace expansion references {name} with VoiceAttack bracket syntax [value1;value2;...]
+    results = try results.map { phrase in
+      try expandToBracketSyntax(phrase, line: line)
+    }
+
+    // Filter out empty results and trim whitespace
+    return
+      results
+      .map { $0.trimmingCharacters(in: .whitespaces) }
+      .filter { !$0.isEmpty }
+  }
+
+  private func expandToBracketSyntax(_ phrase: String, line _: Int?) throws -> String {
+    var result = phrase
+
+    // Keep replacing expansion references until none remain
+    while let openBrace = result.firstIndex(of: "{"),
+      let closeBrace = result.firstIndex(of: "}"),
+      openBrace < closeBrace
+    {
+      let nameStart = result.index(after: openBrace)
+      let name = String(result[nameStart..<closeBrace])
+      let values = try set.resolveExpansion(name)
+
+      // Convert to VoiceAttack bracket syntax
+      let bracketSyntax = "[\(values.joined(separator: ";"))]"
+
+      let prefix = String(result[..<openBrace])
+      let suffix = String(result[result.index(after: closeBrace)...])
+      result = prefix + bracketSyntax + suffix
+    }
+
+    return result
   }
 
   private func expandAlias(parent: Command, name: String) throws {

@@ -109,7 +109,10 @@ class VoiceAttackGenerator: Generator {
     let commandsNode = XMLElement(name: "Commands")
     try commands.each { command in
       guard commands.isReal(command) else { return }
-      try commandsNode.addChild(xmlElement(for: command))
+      // Create separate XML command for each phrase (comma-separated phrases become separate commands)
+      for phrase in command.fullPhrases {
+        try commandsNode.addChild(xmlElement(for: command, phrase: phrase))
+      }
     }
     root.addChild(commandsNode)
 
@@ -204,8 +207,8 @@ class VoiceAttackGenerator: Generator {
     return xml.xmlString(options: .nodePrettyPrint)
   }
 
-  private func xmlElement(for command: Command) throws -> XMLElement {
-    let commandString = command.fullPhrase
+  private func xmlElement(for command: Command, phrase: String) throws -> XMLElement {
+    let commandString = phrase
 
     let node = XMLElement(name: "Command")
 
