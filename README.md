@@ -1,5 +1,10 @@
 # Voice Recognition Profile Generator
 
+[![CI](https://github.com/RISCfuture/VoiceRecognitionProfileGenerator/actions/workflows/swift.yaml/badge.svg)](https://github.com/RISCfuture/VoiceRecognitionProfileGenerator/actions/workflows/swift.yaml)
+[![Release](https://github.com/RISCfuture/VoiceRecognitionProfileGenerator/actions/workflows/release.yaml/badge.svg)](https://github.com/RISCfuture/VoiceRecognitionProfileGenerator/actions/workflows/release.yaml)
+[![Latest Release](https://img.shields.io/github/v/release/RISCfuture/VoiceRecognitionProfileGenerator.svg)](https://github.com/RISCfuture/VoiceRecognitionProfileGenerator/releases/latest)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 This tool generates both [VAC](https://www.dwvac.com) and
 [VoiceAttack](https://voiceattack.com) profiles for voice recognition intended
 for use in video gaming. **VAC** is a simple voice recognition macro utility
