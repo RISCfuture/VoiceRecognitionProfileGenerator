@@ -3,10 +3,6 @@ class Command {
   var phrases: [String]
   weak var parent: Command?
 
-  var hasValidKeystrokes: Bool { keystrokes.allSatisfy(\.isValid) }
-
-  var isTopLevel: Bool { parent == nil }
-
   var name: String {
     guard let parent else { return phrases.first ?? "" }
     return [parent.name, phrases.first].compactMap(\.self).joined(separator: " :: ")
@@ -24,16 +20,6 @@ class Command {
       parent.fullPhrases.map { "\($0) \(phrase)" }
     }
   }
-
-  /// Single phrase using VoiceAttack bracket syntax for alternatives
-  var fullPhrase: String {
-    let current = phrases.count == 1 ? phrases[0] : "[\(phrases.joined(separator: ";"))]"
-    guard let parent else { return current }
-    if phrases.isEmpty { return parent.fullPhrase }
-    return "\(parent.fullPhrase) \(current)"
-  }
-
-  var root: Command { parent?.root ?? self }
 
   init(keystrokes: [Keystroke], phrases: [String] = [], parent: Command? = nil) {
     self.keystrokes = keystrokes
