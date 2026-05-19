@@ -14,13 +14,6 @@ class CommandFileParser {
     self.init(name: name, string: try String(contentsOf: url, encoding: .ascii))
   }
 
-  convenience init(name: String, data: Data) throws {
-    guard let string = String(data: data, encoding: .ascii) else {
-      throw CommandFileErrors.badEncoding
-    }
-    self.init(name: name, string: string)
-  }
-
   func parse() throws {
     var parentStack = [Command]()
 
