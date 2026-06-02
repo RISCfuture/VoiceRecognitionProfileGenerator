@@ -4,7 +4,7 @@ private extension XMLElement {
   static let xsiNil = ["xsi:nil": "true"]
 
   func addNilChildren(_ names: String...) {
-    let children = names.map { XMLElement.make($0, attributes: Self.xsiNil) }
+    let children = names.map { Self.make($0, attributes: Self.xsiNil) }
     for child in children { addChild(child) }
   }
 }
