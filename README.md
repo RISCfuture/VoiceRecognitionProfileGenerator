@@ -17,7 +17,7 @@ domain-specific language (DSL). The DSL is optimized for games that use nested
 menus for generating commands that communicate with NPCs. Here is a simple
 example of such a profile:
 
-```
+```text
 F1 Team
   a Attack My Target
   d Defend Our Base
@@ -60,12 +60,12 @@ generate-profile -f=voiceattack /path/to/profile.vacc > profile.vap
 
 You can then import this profile in VoiceAttack.
 
-# DSL Syntax
+## DSL Syntax
 
 A basic line consists of the key or keys to be pressed, a space, and then the
 phrase to use to invoke the macro:
 
-```
+```text
 a Fire Torpedoes
 wd Wave and Dance
 ```
@@ -73,7 +73,7 @@ wd Wave and Dance
 As you saw before, you can generate complex phrases by nesting commands
 underneath other commands:
 
-```
+```text
 t Team
   f Form on Me
 s Squad
@@ -83,7 +83,7 @@ s Squad
 You can add intermediate lines that do not have any phrases if you need to group
 those commands:
 
-```
+```text
 t Team
   1
     a Attack Target One
@@ -109,7 +109,7 @@ Posit".
 
 You can add assign a macro to multiple phrases by comma-separating phrases:
 
-```
+```text
 a Fire Torpedoes, Torpedoes Away
 ```
 
@@ -138,10 +138,10 @@ must use chording (see below) to type Shift-2 instead.
 You can chord keystrokes (press multiple keys at the same time) by separating
 chord elements with ` + ` -- _spaces are required_. Example:
 
-```
+```text
 SHF + t Team
   1 Attack My Target
-``` 
+```
 
 This would generate a macro that first presses "Shift-T", then presses "1".
 Again, the spaces around the `+` are required.
@@ -151,7 +151,7 @@ Again, the spaces around the `+` are required.
 To avoid repetition, you can assign a group of commands an alias with `&`, and
 then reference that alias when needed with `*`:
 
-```
+```text
 t Team
   a Attack &bases
     1 Base One
@@ -163,7 +163,7 @@ t Team
 And the intermediate commands of course don't need phrases if they're just used
 for grouping:
 
-```
+```text
 t Team
   F1 &actions
     F1 Attack Base
@@ -179,8 +179,7 @@ s Squad
 
 ```
 
-Limitations
------------
+## Limitations
 
 * VAC
   * Chording is not supported
