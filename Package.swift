@@ -3,6 +3,11 @@
 
 import PackageDescription
 
+let approachableConcurrency: [SwiftSetting] = [
+  .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+  .enableUpcomingFeature("InferIsolatedConformances")
+]
+
 let package = Package(
   name: "VoiceRecognitionProfileGenerator",
   defaultLocalization: "en",
@@ -23,7 +28,8 @@ let package = Package(
       ],
       resources: [
         .process("Localizable.xcstrings")
-      ]
+      ],
+      swiftSettings: approachableConcurrency
     )
   ],
   swiftLanguageModes: [.v6]

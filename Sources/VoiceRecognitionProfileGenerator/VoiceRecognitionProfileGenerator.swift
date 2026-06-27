@@ -40,29 +40,22 @@ struct VoiceRecognitionProfileGenerator: AsyncParsableCommand {
   var commands: URL
 
   mutating func run() throws {
-    let name = self.name
-    let commands = self.commands
-    let format = self.format
+    let profileName = name ?? commands.deletingPathExtension().lastPathComponent
 
-    Task { @MainActor in
-      let name = name != nil ? name! : commands.deletingPathExtension().lastPathComponent
+    do {
+      let parser = try CommandFileParser(name: profileName, url: commands)
+      try parser.parse()
 
-      do {
-        let parser = try CommandFileParser(name: name, url: commands)
-        try parser.parse()
+      let generator: Generator =
+        switch format {
+          case .vac: VACGenerator(commands: parser.set)
+          case .voiceAttack: VoiceAttackGenerator(commands: parser.set)
+        }
 
-        let generator: Generator =
-          switch format {
-            case .vac: VACGenerator(commands: parser.set)
-            case .voiceAttack: VoiceAttackGenerator(commands: parser.set)
-          }
-
-        let profile = try generator.generate()
-        print(profile)
-      } catch {
-        printStderr("Error while parsing \(commands.lastPathComponent):")
-        Self.exit(withError: error)
-      }
+      print(try generator.generate())
+    } catch {
+      printStderr("Error while parsing \(commands.lastPathComponent):")
+      throw error
     }
   }
 }

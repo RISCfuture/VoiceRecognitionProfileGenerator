@@ -1,5 +1,5 @@
 import Foundation
-@preconcurrency import RegexBuilder
+import RegexBuilder
 
 struct Token {
   let indent: [Substring]
@@ -12,206 +12,238 @@ struct Token {
   var indentLevel: Int { indent.count }
 }
 
-enum CommandFileLexer {
-  nonisolated(unsafe) private static let indentsRef = Reference(Substring.self)
-  nonisolated(unsafe) private static let keystrokesRef = Reference(Substring.self)
-  nonisolated(unsafe) private static let phrasesRef = Reference(String?.self)
-  nonisolated(unsafe) private static let aliasRef = Reference(String?.self)
+// Compiles its regexes once in init and reuses them read-only for every line.
+// Build one instance per file and reuse it: the compiled `Regex` and `Reference`
+// values are not Sendable, so a lexer can't be shared across isolation domains.
+struct CommandFileLexer {
+  private let indentsRef: Reference<Substring>
+  private let keystrokesRef: Reference<Substring>
+  private let phrasesRef: Reference<String?>
+  private let aliasRef: Reference<String?>
+  private let expansionNameRef: Reference<Substring>
+  private let expansionValuesRef: Reference<Substring>
 
-  nonisolated(unsafe) private static let indent = Regex {
-    ChoiceOf {
-      "\t"; "  "
-    }
-  }
+  private let indent: Regex<Substring>
+  private let keystroke: Regex<Substring>
+  private let phrase: Regex<Substring>
+  private let expansionValue: Regex<Substring>
 
-  nonisolated(unsafe) private static let indents = Regex {
-    Capture(as: indentsRef) {
-      ZeroOrMore { indent }
-    }
-  }
+  private let expansionLineRx: Regex<(Substring, Substring, Substring)>
+  private let lineRx: Regex<(Substring, Substring, Substring, String??, String??)>
 
-  nonisolated(unsafe) private static let literalKey = Regex {
-    CharacterClass(
-      "A"..."Z",
-      "a"..."z",
-      "0"..."9",
-      .anyOf("`-=[]\\;',./")
-    )
-  }
+  init() {
+    let indentsRef = Reference(Substring.self)
+    let keystrokesRef = Reference(Substring.self)
+    let phrasesRef = Reference(String?.self)
+    let aliasRef = Reference(String?.self)
+    let expansionNameRef = Reference(Substring.self)
+    let expansionValuesRef = Reference(Substring.self)
 
-  nonisolated(unsafe) private static let fkey = Regex {
-    ChoiceOf {
-      Regex {
-        "F"
-        ("1"..."9")
-      }
-      Regex {
-        "F1"
-        ("0"..."5")
-      }
-    }
-  }
-
-  nonisolated(unsafe) private static let arrow = Regex {
-    ChoiceOf {
-      "UP"; "DN"; "LT"; "RT"
-    }
-  }
-
-  nonisolated(unsafe) private static let modifier = Regex {
-    ChoiceOf {
-      Regex {
-        ChoiceOf {
-          "L"; "R"
-        }
-        ChoiceOf {
-          "SHIFT"; "CTRL"; "WIN"; "ALT"
-        }
-      }
-      "APPS"
-      "CAPS"
-    }
-  }
-
-  nonisolated(unsafe) private static let carriage = Regex {
-    ChoiceOf {
-      "SPC"; "ENT"; "BKSP"; "TAB"; "ESC"
-    }
-  }
-
-  nonisolated(unsafe) private static let movement = Regex {
-    ChoiceOf {
-      "INS"; "DEL"; "HOME"; "END"; "PGUP"; "PGDN"
-    }
-  }
-
-  nonisolated(unsafe) private static let control = Regex {
-    ChoiceOf {
-      "PSC"; "SCLK"; "BRK"; "NUML"
-    }
-  }
-
-  nonisolated(unsafe) private static let numpad = Regex {
-    "NUM"
-    ChoiceOf {
-      CharacterClass("0"..."9", .anyOf("/*-+.="))
-      "ENT"
-      "CLR"
-    }
-  }
-
-  nonisolated(unsafe) private static let keystroke = Regex {
-    ChoiceOf {
-      literalKey; fkey; arrow; modifier; carriage; movement; control; numpad
-    }
-  }
-
-  nonisolated(unsafe) private static let keystrokeSeparator = Regex {
-    OneOrMore { CharacterClass(.whitespace) }
-    "+"
-    OneOrMore { CharacterClass(.whitespace) }
-  }
-
-  nonisolated(unsafe) private static let keystrokes = Regex {
-    Capture(as: keystrokesRef) {
-      keystroke
-      ZeroOrMore {
-        keystrokeSeparator; keystroke
-      }
-    }
-  }
-
-  nonisolated(unsafe) private static let phrase = Regex {
-    OneOrMore {
-      CharacterClass("A"..."Z", "a"..."z", "0"..."9", .whitespace, .anyOf("'-{}"))
-    }
-  }
-
-  nonisolated(unsafe) private static let phraseSeparator = Regex {
-    ZeroOrMore { CharacterClass(.whitespace) }
-    ","
-    ZeroOrMore { CharacterClass(.whitespace) }
-  }
-
-  nonisolated(unsafe) private static let phrases = Regex {
-    Capture(as: phrasesRef) {
-      phrase
-      ZeroOrMore {
-        phraseSeparator; phrase
-      }
-    } transform: {
-      String($0)
-    }
-  }
-
-  nonisolated(unsafe) private static let aliasName = Regex {
-    OneOrMore {
-      CharacterClass("A"..."Z", "a"..."z", "0"..."9", .anyOf("_"))
-    }
-  }
-
-  nonisolated(unsafe) private static let aliasDefinitionRx = Regex {
-    "&"; aliasName
-  }
-  nonisolated(unsafe) private static let aliasReferenceRx = Regex {
-    "*"; aliasName
-  }
-  nonisolated(unsafe) private static let alias = Regex {
-    Capture(as: aliasRef) {
+    let indent = Regex {
       ChoiceOf {
-        aliasDefinitionRx; aliasReferenceRx
+        "\t"; "  "
       }
-    } transform: {
-      String($0)
     }
-  }
 
-  nonisolated(unsafe) private static let expansionNameRef = Reference(Substring.self)
-  nonisolated(unsafe) private static let expansionValuesRef = Reference(Substring.self)
-
-  nonisolated(unsafe) private static let expansionName = Regex {
-    OneOrMore {
-      CharacterClass("A"..."Z", "a"..."z", "0"..."9", .anyOf("_"))
+    let literalKey = Regex {
+      CharacterClass(
+        "A"..."Z",
+        "a"..."z",
+        "0"..."9",
+        .anyOf("`-=[]\\;',./")
+      )
     }
-  }
 
-  nonisolated(unsafe) private static let expansionValue = Regex {
-    OneOrMore {
-      CharacterClass("A"..."Z", "a"..."z", "0"..."9", .whitespace, .anyOf("'-"))
+    let fkey = Regex {
+      ChoiceOf {
+        Regex {
+          "F"
+          ("1"..."9")
+        }
+        Regex {
+          "F1"
+          ("0"..."5")
+        }
+      }
     }
-  }
 
-  nonisolated(unsafe) private static let expansionLineRx = Regex {
-    "{"
-    Capture(as: expansionNameRef) { expansionName }
-    "}"
-    ":"
-    ZeroOrMore { CharacterClass(.whitespace) }
-    Capture(as: expansionValuesRef) {
-      expansionValue
-      ZeroOrMore {
-        phraseSeparator
+    let arrow = Regex {
+      ChoiceOf {
+        "UP"; "DN"; "LT"; "RT"
+      }
+    }
+
+    let modifier = Regex {
+      ChoiceOf {
+        Regex {
+          ChoiceOf {
+            "L"; "R"
+          }
+          ChoiceOf {
+            "SHIFT"; "CTRL"; "WIN"; "ALT"
+          }
+        }
+        "APPS"
+        "CAPS"
+      }
+    }
+
+    let carriage = Regex {
+      ChoiceOf {
+        "SPC"; "ENT"; "BKSP"; "TAB"; "ESC"
+      }
+    }
+
+    let movement = Regex {
+      ChoiceOf {
+        "INS"; "DEL"; "HOME"; "END"; "PGUP"; "PGDN"
+      }
+    }
+
+    let control = Regex {
+      ChoiceOf {
+        "PSC"; "SCLK"; "BRK"; "NUML"
+      }
+    }
+
+    let numpad = Regex {
+      "NUM"
+      ChoiceOf {
+        CharacterClass("0"..."9", .anyOf("/*-+.="))
+        "ENT"
+        "CLR"
+      }
+    }
+
+    let keystroke = Regex {
+      ChoiceOf {
+        literalKey; fkey; arrow; modifier; carriage; movement; control; numpad
+      }
+    }
+
+    let keystrokeSeparator = Regex {
+      OneOrMore { CharacterClass(.whitespace) }
+      "+"
+      OneOrMore { CharacterClass(.whitespace) }
+    }
+
+    let keystrokes = Regex {
+      Capture(as: keystrokesRef) {
+        keystroke
+        ZeroOrMore {
+          keystrokeSeparator; keystroke
+        }
+      }
+    }
+
+    let phrase = Regex {
+      OneOrMore {
+        CharacterClass("A"..."Z", "a"..."z", "0"..."9", .whitespace, .anyOf("'-{}"))
+      }
+    }
+
+    let phraseSeparator = Regex {
+      ZeroOrMore { CharacterClass(.whitespace) }
+      ","
+      ZeroOrMore { CharacterClass(.whitespace) }
+    }
+
+    let phrases = Regex {
+      Capture(as: phrasesRef) {
+        phrase
+        ZeroOrMore {
+          phraseSeparator; phrase
+        }
+      } transform: {
+        String($0)
+      }
+    }
+
+    let indents = Regex {
+      Capture(as: indentsRef) {
+        ZeroOrMore { indent }
+      }
+    }
+
+    let aliasName = Regex {
+      OneOrMore {
+        CharacterClass("A"..."Z", "a"..."z", "0"..."9", .anyOf("_"))
+      }
+    }
+
+    let aliasDefinitionRx = Regex {
+      "&"; aliasName
+    }
+    let aliasReferenceRx = Regex {
+      "*"; aliasName
+    }
+    let alias = Regex {
+      Capture(as: aliasRef) {
+        ChoiceOf {
+          aliasDefinitionRx; aliasReferenceRx
+        }
+      } transform: {
+        String($0)
+      }
+    }
+
+    let expansionName = Regex {
+      OneOrMore {
+        CharacterClass("A"..."Z", "a"..."z", "0"..."9", .anyOf("_"))
+      }
+    }
+
+    let expansionValue = Regex {
+      OneOrMore {
+        CharacterClass("A"..."Z", "a"..."z", "0"..."9", .whitespace, .anyOf("'-"))
+      }
+    }
+
+    let expansionLineRx = Regex {
+      "{"
+      Capture(as: expansionNameRef) { expansionName }
+      "}"
+      ":"
+      ZeroOrMore { CharacterClass(.whitespace) }
+      Capture(as: expansionValuesRef) {
         expansionValue
+        ZeroOrMore {
+          phraseSeparator
+          expansionValue
+        }
       }
-    }
-    ZeroOrMore { CharacterClass(.whitespace) }
-  }.anchorsMatchLineEndings()
+      ZeroOrMore { CharacterClass(.whitespace) }
+    }.anchorsMatchLineEndings()
 
-  nonisolated(unsafe) private static let lineRx = Regex {
-    indents
-    keystrokes
-    Optionally {
-      OneOrMore { CharacterClass(.whitespace) }
-      phrases
-    }
-    Optionally {
-      OneOrMore { CharacterClass(.whitespace) }
-      alias
-    }
-    ZeroOrMore { CharacterClass(.whitespace) }
-  }.anchorsMatchLineEndings()
+    let lineRx = Regex {
+      indents
+      keystrokes
+      Optionally {
+        OneOrMore { CharacterClass(.whitespace) }
+        phrases
+      }
+      Optionally {
+        OneOrMore { CharacterClass(.whitespace) }
+        alias
+      }
+      ZeroOrMore { CharacterClass(.whitespace) }
+    }.anchorsMatchLineEndings()
 
-  static func lex(line: String, lineNumber _: Int?) throws -> Token? {
+    self.indentsRef = indentsRef
+    self.keystrokesRef = keystrokesRef
+    self.phrasesRef = phrasesRef
+    self.aliasRef = aliasRef
+    self.expansionNameRef = expansionNameRef
+    self.expansionValuesRef = expansionValuesRef
+    self.indent = indent
+    self.keystroke = keystroke
+    self.phrase = phrase
+    self.expansionValue = expansionValue
+    self.expansionLineRx = expansionLineRx
+    self.lineRx = lineRx
+  }
+
+  func lex(line: String, lineNumber _: Int?) throws -> Token? {
     // Try expansion definition line first (has no keystroke)
     if let expansionMatch = try expansionLineRx.wholeMatch(in: line) {
       let name = String(expansionMatch[expansionNameRef])
