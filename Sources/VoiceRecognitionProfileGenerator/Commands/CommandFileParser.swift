@@ -15,6 +15,7 @@ class CommandFileParser {
   }
 
   func parse() throws {
+    let lexer = CommandFileLexer()
     var parentStack = [Command]()
 
     var parseError: Error?
@@ -25,7 +26,7 @@ class CommandFileParser {
       guard !line.isEmpty else { return }
 
       do {
-        guard let token = try CommandFileLexer.lex(line: line, lineNumber: lineNum) else {
+        guard let token = try lexer.lex(line: line, lineNumber: lineNum) else {
           throw CommandFileErrors.badFormat(line: lineNum)
         }
 
