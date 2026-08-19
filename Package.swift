@@ -16,7 +16,8 @@ let package = Package(
     .executable(name: "generate-profile", targets: ["VoiceRecognitionProfileGenerator"])
   ],
   dependencies: [
-    .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.5.0")
+    .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.5.0"),
+    .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.5.0")
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
