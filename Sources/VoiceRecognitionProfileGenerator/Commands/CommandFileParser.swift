@@ -18,7 +18,7 @@ class CommandFileParser {
     let lexer = CommandFileLexer()
     var parentStack = [Command]()
 
-    var parseError: Error?
+    var parseError: (any Error)?
 
     var lineNum = 0
     string.enumerateLines { line, stop in

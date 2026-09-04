@@ -46,7 +46,7 @@ struct VoiceRecognitionProfileGenerator: AsyncParsableCommand {
       let parser = try CommandFileParser(name: profileName, url: commands)
       try parser.parse()
 
-      let generator: Generator =
+      let generator: any Generator =
         switch format {
           case .vac: VACGenerator(commands: parser.set)
           case .voiceAttack: VoiceAttackGenerator(commands: parser.set)
