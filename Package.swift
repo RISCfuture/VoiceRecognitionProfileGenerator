@@ -1,4 +1,4 @@
-// swift-tools-version: 6.3
+// swift-tools-version: 6.4
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -15,7 +15,7 @@ let upcomingFeatures: [SwiftSetting] = [
 let package = Package(
   name: "VoiceRecognitionProfileGenerator",
   defaultLocalization: "en",
-  platforms: [.macOS(.v13)],
+  platforms: [.macOS(.v27)],
   products: [
     .executable(name: "generate-profile", targets: ["VoiceRecognitionProfileGenerator"])
   ],
