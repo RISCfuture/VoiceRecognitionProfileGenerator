@@ -50,19 +50,19 @@ extension CommandFileErrors: LocalizedError {
         )
         return prependLine(error: error, line: line)
       case let .unknownAlias(name, line):
-        let format = String(
-          localized: "Unknown alias “%@”.",
+        let error = String(
+          localized: "Unknown alias “\(name)”.",
           bundle: Bundle.module,
           comment: "command file error"
         )
-        return prependLine(error: String(format: format, name), line: line)
+        return prependLine(error: error, line: line)
       case let .aliasNameInUse(name, line):
-        let format = String(
-          localized: "Alias “%@” defined twice.",
+        let error = String(
+          localized: "Alias “\(name)” defined twice.",
           bundle: Bundle.module,
           comment: "command file error"
         )
-        return prependLine(error: String(format: format, name), line: line)
+        return prependLine(error: error, line: line)
       case let .unknownExpansion(name, line):
         let error = "Unknown expansion \"{\(name)}\"."
         return prependLine(error: error, line: line)
@@ -74,12 +74,11 @@ extension CommandFileErrors: LocalizedError {
 
   private func prependLine(error: String, line: Int?) -> String {
     if let line {
-      let format = String(
-        localized: "Line %d: %@",
+      return String(
+        localized: "Line \(line, format: .number.grouping(.never)): \(error)",
         bundle: Bundle.module,
         comment: "error with line number"
       )
-      return String(format: format, line, error)
     }
     return error
   }
@@ -94,12 +93,11 @@ extension GeneratorErrors: LocalizedError {
   var errorDescription: String? {
     switch self {
       case let .unsupportedKeystroke(keystroke):
-        let format = String(
-          localized: "Keystroke “%@” is not supported.",
+        return String(
+          localized: "Keystroke “\(keystroke.localizedDescription)” is not supported.",
           bundle: Bundle.module,
           comment: "generator error"
         )
-        return String(format: format, keystroke.localizedDescription)
       case .chordingUnsupported:
         return String(
           localized: "Multiple simultaneous keystrokes (chording) is not supported.",

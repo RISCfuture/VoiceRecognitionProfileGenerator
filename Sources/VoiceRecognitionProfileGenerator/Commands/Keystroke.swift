@@ -61,8 +61,7 @@ enum Keystroke: Sendable {
           default: return String(char)
         }
       case let .function(num):
-        let format = String(localized: "F%d", comment: "keyboard function key")
-        return String(format: format, num)
+        return String(localized: "F\(num)", comment: "keyboard function key")
       case let .shift(side):
         switch side {
           case .left:
@@ -137,12 +136,11 @@ enum Keystroke: Sendable {
           case "\n":
             return String(localized: "Numpad Enter", bundle: Bundle.module, comment: "keyboard key")
           default:
-            let format = String(
-              localized: "Numpad %@",
+            return String(
+              localized: "Numpad \(String(char))",
               bundle: Bundle.module,
               comment: "keyboard key"
             )
-            return String(format: format, String(char))
         }
       case .clear: return String(localized: "Clear", bundle: Bundle.module, comment: "keyboard key")
       case .upArrow:
