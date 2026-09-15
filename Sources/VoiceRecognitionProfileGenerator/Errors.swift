@@ -43,12 +43,12 @@ extension CommandFileErrors: LocalizedError {
         )
         return prependLine(error: error, line: line)
       case let .badKeystroke(keystroke, line):
-        let format = String(
-          localized: "Couldn’t understand keystroke.",
+        let error = String(
+          localized: "Couldn’t understand keystroke “\(keystroke)”.",
           bundle: Bundle.module,
           comment: "command file error"
         )
-        return prependLine(error: String(format: format, keystroke), line: line)
+        return prependLine(error: error, line: line)
       case let .unknownAlias(name, line):
         let format = String(
           localized: "Unknown alias “%@”.",
