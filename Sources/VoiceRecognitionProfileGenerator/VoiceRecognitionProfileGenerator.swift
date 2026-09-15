@@ -61,5 +61,5 @@ struct VoiceRecognitionProfileGenerator: AsyncParsableCommand {
 }
 
 private func printStderr(_ string: String) {
-  fputs(string + "\n", stderr)
+  unsafe fputs(string + "\n", stderr)
 }
