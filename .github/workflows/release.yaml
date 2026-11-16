@@ -6,9 +6,15 @@ on:
       - 'v*.*.*'
 
 jobs:
+  route:
+    uses: RISCfuture/ci-workflows/.github/workflows/minerva-route.yml@1.1.0
+    permissions:
+      contents: read
   release:
     name: Release
-    runs-on: xcode-27
+    needs: route
+    # Runs the macOS 27 generator it builds, so it needs the macOS 27 pool.
+    runs-on: ${{ fromJSON(needs.route.outputs.macos-27) }}
     permissions:
       contents: write
     steps:
